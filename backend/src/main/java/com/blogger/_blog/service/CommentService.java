@@ -12,10 +12,10 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public void createComment(String content,Post post,User user) throws DataIntegrityViolationException { 
+    public Comment createComment(String content,Post post,User user) throws DataIntegrityViolationException { 
         try {
             Comment comment = new Comment(content, post, user);
-            this.commentRepository.save(comment);
+            return this.commentRepository.save(comment);
         } catch (DataIntegrityViolationException e) {
             throw e;
         } catch (Exception e) {

@@ -143,7 +143,7 @@ export class CreatePost implements OnInit {
   }
 
   goToHome() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/home/feeds']);
   }
 
   onMediaChangeContent(media: MediaUploadDataTransfer) {

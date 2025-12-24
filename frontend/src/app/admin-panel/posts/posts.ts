@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { AdminPanelService, PostState } from '../admin-panel.service';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ToastService } from '../../toast-component/toast.service';
 
 
 interface PostLineData {
@@ -23,7 +24,7 @@ export class PostsComponent implements OnInit {
 
   posts$ = new BehaviorSubject<PostLineData[] | []>([]);
   private isDeleting = false;
-  constructor(private postService: PostService,private dialog: MatDialog ,private adminService: AdminPanelService, private router: Router,private cdn: ChangeDetectorRef) { }
+  constructor(private toastService: ToastService, private postService: PostService, private dialog: MatDialog, private adminService: AdminPanelService, private router: Router, private cdn: ChangeDetectorRef) { }
   ngOnInit(): void {
     this.getPosts();
   }
@@ -70,10 +71,11 @@ export class PostsComponent implements OnInit {
     if (!token) {
       return;
     }
-    
-    const state = post.state == 'HIDDEN'? PostState.VISIBLE:PostState.HIDDEN;
+
+    const state = post.state == 'HIDDEN' ? PostState.VISIBLE : PostState.HIDDEN;
     this.adminService.updatePostState(token, post.id, state).subscribe({
       next: (updatedPost: PostDataResponse) => {
+        this.toastService.success('Post Updated successfully!');
         const newArray = this.posts$.value.map((p) => {
           if (p.data.id == updatedPost.id) {
             p.data = updatedPost;
@@ -88,16 +90,16 @@ export class PostsComponent implements OnInit {
     });
   }
 
-  openConfirmationDialog() : Observable<boolean> {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-        width: '400px',
-        data: {
-          title: 'Delete Post',
-          message: 'Are you sure you want to delete this post?'
-        }
-      });
-      return dialogRef.afterClosed();
-    }
+  openConfirmationDialog(): Observable<boolean> {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Post',
+        message: 'Are you sure you want to delete this post?'
+      }
+    });
+    return dialogRef.afterClosed();
+  }
   deletePost(postID: any) {
     if (this.isDeleting) {
       return;
@@ -112,33 +114,34 @@ export class PostsComponent implements OnInit {
       this.isDeleting = false;
       if (result) {
         this.adminService.deletePost(token, postID).subscribe({
-        next: (res) => {
-          const array: PostLineData[] = this.posts$.value.filter(p => {
-            return p.data.id !== postID;
-          })
-        this.posts$.next(array);
-        
-        },
-        error: (err:HttpErrorResponse) => {
-        console.log('err: ');
-        switch (err.status) {
-          case 403:
-            this.router.navigate(['/unauthorized']);
-            break;
-          default:
-            break;
-        }
-      }
-    });
+          next: (res) => {
+            this.toastService.success('Post Deleted successfully!');
+            const array: PostLineData[] = this.posts$.value.filter(p => {
+              return p.data.id !== postID;
+            })
+            this.posts$.next(array);
+
+          },
+          error: (err: HttpErrorResponse) => {
+            console.log('err: ');
+            switch (err.status) {
+              case 403:
+                this.router.navigate(['/unauthorized']);
+                break;
+              default:
+                break;
+            }
+          }
+        });
       }
     })
-    
+
   }
 
   goToPostVeiw(postId: any) {
     if (this.isDeleting) {
       return;
     }
-    this.router.navigate(['post/view',postId]);
+    this.router.navigate(['post/view', postId]);
   }
 }

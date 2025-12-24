@@ -2,7 +2,7 @@ package com.blogger._blog.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,9 +36,6 @@ public class AdminController {
     @GetMapping("/users")
     public ResponseEntity<List<UserDataResponse>> getAllUsers() {
         List<UserDataResponse> users = this.adminService.getAllUsers();
-        if (users == null) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok().body(users);
     }
 
@@ -61,7 +58,10 @@ public class AdminController {
             return ResponseEntity.badRequest().body(new Response(false, "not authenticated"));
         }
         if (username.equals(authentication.getName())) {
-            return ResponseEntity.badRequest().body(new Response(false, "you can't delete your self"));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't delete your self"));
+        }
+        if (user.getRoles().equals("admin")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't delete admin"));
         }
         this.uService.delete(user);
         return ResponseEntity.ok().body(new Response(true, "user deleted succesfuly"));
@@ -69,12 +69,6 @@ public class AdminController {
 
     @DeleteMapping("/posts/delete/{id}")
     public ResponseEntity<Response> deletePost(@PathVariable("id") Long id) {
-        System.out.println("===================================================");
-        System.out.println("===================================================");
-        System.out.println("===================================================");
-        System.out.println("===================================================");
-        System.out.println("===================================================");
-
         Post p = this.postService.getById(id);
         if (p == null) {
             return ResponseEntity.notFound().build();
@@ -86,9 +80,6 @@ public class AdminController {
     @GetMapping("/reports")
     public ResponseEntity<List<UserDataResponse>> getAllReports() {
         List<UserDataResponse> users = this.adminService.getAllUsers();
-        if (users == null) {
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok().body(users);
     }
 
@@ -108,10 +99,6 @@ public class AdminController {
         if (content == null) {
             return ResponseEntity.badRequest().body(null);
         }
-        System.out.println("=====================================");
-        System.out.println("=====================================");
-        System.out.println("=====================================");
-        System.out.println("content is : " + content);
         List<UserDataResponse> list = this.adminService.findAll(content);
         return ResponseEntity.ok().body(list);
     }

@@ -1,4 +1,5 @@
 package com.blogger._blog.model;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,24 +42,32 @@ public class Post {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-@Fetch(FetchMode.SUBSELECT)
-private List<Notification> notifications = new ArrayList<>();
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Notification> notifications = new ArrayList<>();
 
-// Add getter and setter
-public List<Notification> getNotifications() {
-    return notifications;
-}
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<PostReport> reports = new ArrayList<>();
 
-public void setNotifications(List<Notification> notifications) {
-    this.notifications = notifications;
-}
-    public Post() {}
-    public Post(String title,String content,String category) {
+    // Add getter and setter
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public Post() {
+    }
+
+    public Post(String title, String content, String category) {
         this.title = title;
         this.content = content;
         this.category = category;
         this.state = PostState.NEW;
     }
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -71,15 +80,15 @@ public void setNotifications(List<Notification> notifications) {
     public String getTitle() {
         return title;
     }
-    
+
     public void setTitle(String title) {
         this.title = title;
     }
-    
+
     public String getContent() {
         return content;
     }
-    
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -129,7 +138,7 @@ public void setNotifications(List<Notification> notifications) {
     }
 
     public void setReactions(List<Reaction> reactions) {
-        this.reactions=reactions;
+        this.reactions = reactions;
     }
 
     public List<Comment> getComments() {
@@ -137,7 +146,7 @@ public void setNotifications(List<Notification> notifications) {
     }
 
     public void setComments(List<Comment> comments) {
-        this.comments=comments;
+        this.comments = comments;
     }
 
 }

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MediaUpload, MediaUploadData, MediaUploadService } from '../media-upload/media-upload-service';
 import { UserDataResponse } from '../profile/profile.service';
 import { CommentDataResponse } from '../comment/comment.service';
+import { ToastService } from '../toast-component/toast.service';
 
 export interface PostDataResponse {
   id: number;
@@ -53,7 +54,7 @@ export class PostService {
 
   private apiUrl = 'http://localhost:8080/api';
 
-  constructor(private http: HttpClient, private mediaUploadService: MediaUploadService) { }
+  constructor(private toastService: ToastService, private http: HttpClient, private mediaUploadService: MediaUploadService) { }
 
   create(data: PostData, token: String): Observable<any> {
     const options = {
@@ -94,15 +95,23 @@ export class PostService {
     }
     this.mediaUploadService.createPost(postData, mediaContents, token).subscribe({
       next: event => {
-        //console.log('eventType : ', event.type, '; progress : ', HttpEventType[event.type]);
+       if (event.type == HttpEventType.Response) {
+         this.toastService.success("Post Created Succesfuly");
+       }
       },
       error: (err: HttpErrorResponse) => {
         switch (err.status) {
           case 413:
-            alert(err.error.message);
+            this.toastService.error(err.error.message);
+
+            break;
+          case 401:
+            this.toastService.error(err.error.message);
+
             break;
           case 400:
-            alert(err.error.message);
+            this.toastService.error(err.error.message);
+
             break;
           default:
             break;
@@ -132,9 +141,9 @@ export class PostService {
       error: (err: HttpErrorResponse) => {
         switch (err.status) {
           case 400:
-            
+            this.toastService.error(err.error.message);
             break;
-        
+
           default:
             break;
         }

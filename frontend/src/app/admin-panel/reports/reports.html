@@ -1,7 +1,7 @@
 <div class="reports-container">
     <div class="header">
         <h1>All Reports ({{reportsList().length}})</h1>
-        <input type="text" class="search-box" placeholder="Search users...">
+        <input type="text" class="search-box" placeholder="Search reports...">
     </div>
 
     <table>
@@ -18,23 +18,36 @@
             @for (report of reportsList(); track report.report.id) {
             <tr>
                 <td data-label="Name">{{ report.report.author.fullname }}</td>
-                <td data-label="Content">{{ report.report.content }}</td>
+                <td data-label="Content">
+                    <span class="content-text">{{ report.report.content }}</span>
+                </td>
                 <td data-label="Reason">
                     <span class="status-badge status-report">{{ report.report.reason }}</span>
                 </td>
-                <td data-label="Date">{{ report.report.created_at }}</td>
-                <td class="actions-cell">
-                    <button class="menu-btn" (click)="toggleDropdown(report.report.id)">⋮</button>
-                    <div [class]="!report.showMenu ? 'dropdown-menu' : 'dropdown-menu show'">
-                        <button class="dropdown-item">See More</button>
+                <td data-label="Date">{{ formatDate(report.report.created_at) }}</td>
+                <td class="actions-cell" data-label="">
+                    <button class="menu-btn" (click)="toggleDropdown(report.report.id)">
+                        <span>Actions</span>
+                        <span class="menu-icon">⋮</span>
+                    </button>
+                    <div [class]="report.showMenu ? 'dropdown-menu show' : 'dropdown-menu'">
+                        <button class="dropdown-item" >See More</button>
                         <button class="dropdown-item" (click)="onViewPost(report.report.post.id)">View Post</button>
-                        <button class="dropdown-item" (click)="banUser(report.report.post.author)">Ban User</button>
-                        <button class="dropdown-item" (click)="hidePost(report.report.post.id)">Hide Post</button>
-                        <button class="dropdown-item" (click)="onDeletePost(report.report.post.id)">Delete Post</button>
+                        <button class="dropdown-item ban" (click)="banUser(report.report.post.author)">Ban User</button>
+                        <button class="dropdown-item remove" (click)="hidePost(report.report.post.id)">Hide
+                            Post</button>
+                        <button class="dropdown-item remove" (click)="onDeletePost(report.report.post.id)">Delete
+                            Post</button>
                     </div>
                 </td>
             </tr>
             }
         </tbody>
     </table>
+
+    @if(reportsList().length === 0) {
+    <div class="empty-state">
+        <p>No reports found</p>
+    </div>
+    }
 </div>

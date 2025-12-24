@@ -9,12 +9,13 @@ import { ReportData, ReportDialogComponent } from '../post/report-dialog/report-
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDataRequest, ReportDialogService, ReportPostData, ReportReason } from '../post/report-dialog/report-dialog.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog';
-import { AuthService } from '../auth';
+import { AuthService, Response } from '../auth';
 import { ProfileService, UserDataResponse } from '../profile/profile.service';
 import { AdminPanelService, PostState } from '../admin-panel/admin-panel.service';
 import { CommentComponent } from '../comment/comment';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HeaderComponent } from '../header/header';
+import { ToastService } from '../toast-component/toast.service';
 
 enum State {
   update,
@@ -37,7 +38,7 @@ export class BlogContentView implements OnInit {
   postLiked: boolean = false;
   isAdmin: boolean = false;
   isMenuOpened: boolean = false;
-  constructor(private authService: AuthService, private postService: PostService, private router: Router, private commentService: CommentService, private route: ActivatedRoute, private dialog: MatDialog, private reportService: ReportDialogService, private profileService: ProfileService, private adminService: AdminPanelService, @Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(private toastService: ToastService, private authService: AuthService, private postService: PostService, private router: Router, private commentService: CommentService, private route: ActivatedRoute, private dialog: MatDialog, private reportService: ReportDialogService, private profileService: ProfileService, private adminService: AdminPanelService, @Inject(PLATFORM_ID) private platformId: Object) {
   }
 
   ngOnInit() {
@@ -123,10 +124,16 @@ export class BlogContentView implements OnInit {
       reason: this.convertReportReasonToEnum(reportData.reason)
     }
     this.reportService.createPostReport(token, data).subscribe({
-      next: (response: ReportPostData) => {
+      next: (response: Response) => {
       },
-      error: (err) => {
-        console.error('error: ', err);
+      error: (err:HttpErrorResponse) => {
+        switch (err.status) {
+          case 400:
+            alert(err.error.message);
+            break;
+          default:
+            break;
+        }
       }
     });
   }
@@ -165,8 +172,20 @@ export class BlogContentView implements OnInit {
       return;
     }
     this.commentService.saveComment(token, commentData).subscribe({
-      next: (response) => {
-        console.log('response: ', response);
+      next: (response: any) => {
+        if (response.message) {
+          return;
+        }
+        const comment: CommentDataResponse = response;
+        if (!this.post$.value) {
+          return;
+        }
+        let comments: CommentDataResponse[] = this.post$.value?.comments;
+        comments.push(comment);
+        const NewPostData: PostDataResponse = {...this.post$.value, comments : comments} 
+        this.post$.next(NewPostData);
+        this.commentContent = '';
+        this.toastService.success("comment created succesfuly");
       },
       error: (err: HttpErrorResponse) => {
         switch (err.status) {

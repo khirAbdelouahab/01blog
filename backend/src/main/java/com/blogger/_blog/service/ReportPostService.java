@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.blogger._blog.Repository.ReportPostRepository;
@@ -27,14 +28,27 @@ public class ReportPostService {
         return this.reportPostRepository.save(report);
     }
 
-    public PostReport create(Post post,User author,ReportReason reason,String content) {
-        if (post == null || author == null) {
-            return null;
-        }
+    public PostReport create(Post post, User author, ReportReason reason, String content) {
+    if (post == null || author == null) {
+        throw new IllegalArgumentException("Post and author cannot be null");
+    }
+    
+    if (reason == null) {
+        throw new IllegalArgumentException("Report reason cannot be null");
+    }
+    
+    if (content != null && content.length() > 200) {
+        throw new IllegalArgumentException("Report content cannot exceed 200 characters");
+    }
+    
+    try {
         PostReport report = new PostReport(post, author, reason);
         report.setContent(content);
         return this.reportPostRepository.save(report);
+    } catch (DataIntegrityViolationException e) {
+        throw new IllegalArgumentException("Failed to create report: " + e.getMostSpecificCause().getMessage());
     }
+}
 
     public List<ReportPostData> getAllbyPost(Long postId) {
         List<PostReport> arrayReports = this.reportPostRepository.findAllByPostId(postId);

@@ -32,8 +32,10 @@ public class JWTService {
         claims.put("exp", jwtExpiration); // or use as 'sub' below
         claims.put("username", userDetails.getUsername());
         claims.put("email", userDetails.getEmail());
-        claims.put("role", userDetails.getRole().name());//sub
-        claims.put("sub", String.valueOf(userDetails.getId()));//sub
+        claims.put("role", userDetails.getRole().name());// sub
+        claims.put("sub", String.valueOf(userDetails.getId()));// sub
+        claims.put("state", String.valueOf(userDetails.getState()));// sub
+
         return createToken(claims, userDetails.getUsername());
     }
 
@@ -42,9 +44,15 @@ public class JWTService {
         claims.put("exp", jwtExpiration); // or use as 'sub' below
         claims.put("username", userDetails.getUsername());
         claims.put("email", userDetails.getEmail());
-        claims.put("role", userDetails.getRole());//sub
-        claims.put("sub", String.valueOf(userDetails.getId()));//sub
+        claims.put("role", userDetails.getRole());// sub
+        claims.put("sub", String.valueOf(userDetails.getId()));// sub
+        claims.put("state", String.valueOf(userDetails.getState()));// sub
+
         return createToken(claims, userDetails.getUsername());
+    }
+
+    public String extractState(String token) {
+        return extractClaim(token, claims -> claims.get("state", String.class));
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -86,6 +94,7 @@ public class JWTService {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername());
     }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

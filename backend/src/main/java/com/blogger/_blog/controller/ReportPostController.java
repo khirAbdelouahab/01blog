@@ -2,6 +2,7 @@ package com.blogger._blog.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blogger._blog.details.ReportDataRequest;
 import com.blogger._blog.details.ReportPostData;
+import com.blogger._blog.details.Response;
 import com.blogger._blog.model.Post;
 import com.blogger._blog.model.PostReport;
 import com.blogger._blog.model.User;
@@ -28,11 +30,12 @@ public class ReportPostController {
     @Autowired
     private ReportPostService reportPostService;
 
-    @Autowired 
+    @Autowired
     private UserAuthenticationService uAuthenticationService;
 
     @Autowired
     private PostService postService;
+
     @GetMapping("/find/all")
     public ResponseEntity<List<ReportPostData>> getAllReports() {
         List<ReportPostData> reportsPostData = this.reportPostService.getReportsData();
@@ -46,16 +49,20 @@ public class ReportPostController {
     }
 
     @PostMapping("/post/new")
-    public ResponseEntity<ReportPostData> create(@RequestBody ReportDataRequest reportData, Authentication authentication) {
-
-        System.out.println(String.format("postId: %d; username: %s", reportData.getReportedId(),authentication.getName()));
+    public ResponseEntity<Response> create(@RequestBody ReportDataRequest reportData, Authentication authentication) {
         User user = this.uAuthenticationService.findByUsername(authentication.getName());
         Post post = this.postService.getById(reportData.getReportedId());
         if (post == null || user == null) {
             return ResponseEntity.badRequest().body(null);
         }
-        PostReport data = this.reportPostService.create(post, user, reportData.getReason(),reportData.getContent());
-        ReportPostData result = ReportPostData.convert(data);
-        return ResponseEntity.ok().body(result);
+        try {
+            this.reportPostService.create(post, user, reportData.getReason(),
+                    reportData.getContent());
+            return ResponseEntity.ok().body(new Response(true, "report submitted succesfuly"));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.internalServerError().body(new Response(false, e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new Response(false, e.getMessage()));
+        }
     }
 }

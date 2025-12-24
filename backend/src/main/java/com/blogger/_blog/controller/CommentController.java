@@ -1,9 +1,7 @@
 package com.blogger._blog.controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,11 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blogger._blog.details.CommentData;
+import com.blogger._blog.details.CommentDataResponse;
 import com.blogger._blog.details.Response;
+import com.blogger._blog.model.Comment;
 import com.blogger._blog.model.Post;
 import com.blogger._blog.model.User;
 import com.blogger._blog.service.CommentService;
@@ -35,7 +34,7 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/new")
-    public ResponseEntity<Response> create(@RequestBody CommentData data, Authentication authentication) {
+    public ResponseEntity<?> create(@RequestBody CommentData data, Authentication authentication) {
         if (data == null || data.getContent().equals("")) {
             return ResponseEntity.badRequest().body(new Response(false, "invalid data"));
         }
@@ -45,8 +44,9 @@ public class CommentController {
             return ResponseEntity.notFound().build();
         }
         try {
-            this.commentService.createComment(data.getContent(), post, user);
-            return ResponseEntity.ok().body(new Response(true, "comment is created"));
+            Comment comment =  this.commentService.createComment(data.getContent(), post, user);
+            CommentDataResponse commentConverted = CommentDataResponse.convert(comment); 
+            return ResponseEntity.ok().body(commentConverted);
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(new Response(false, "comment 'Content' is too long"));
         } catch (Exception e) {

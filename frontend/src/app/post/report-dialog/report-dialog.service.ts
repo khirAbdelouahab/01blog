@@ -3,6 +3,7 @@ import { PostDataResponse } from '../post-service';
 import { UserDataResponse } from '../../profile/profile.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Response } from '../../auth';
 
 
 
@@ -51,14 +52,14 @@ export class ReportDialogService {
   private apiUrl = 'http://localhost:8080/api';
   constructor(private http: HttpClient) { }
 
-  createPostReport(token: string, reportPostData: ReportDataRequest) : Observable<ReportPostData>{
+  createPostReport(token: string, reportPostData: ReportDataRequest) : Observable<Response>{
     const options = {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     };
-    return this.http.post<ReportPostData>(`${this.apiUrl}/report/post/new`,reportPostData,options);
+    return this.http.post<Response>(`${this.apiUrl}/report/post/new`,reportPostData,options);
   }
 
   createUserReport(token: string, reportUserData: ReportUserData) : Observable<ReportUserData>{

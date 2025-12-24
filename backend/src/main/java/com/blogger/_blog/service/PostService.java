@@ -30,23 +30,46 @@ public class PostService {
         if (post.getAuthor() == null) {
             throw new IllegalArgumentException("Post author cannot be null");
         }
+
+        // Add validation for title and content length
+        if (post.getTitle() != null && post.getTitle().length() > 150) {
+            throw new IllegalArgumentException("Title cannot exceed 150 characters");
+        }
+
+        if (post.getContent() != null && post.getContent().length() > 3000) {
+            throw new IllegalArgumentException("Content cannot exceed 3000 characters");
+        }
+
         post.setCreationDate(new Date());
+
         try {
             Post createdPost = this.postRepository.save(post);
             this.notificationService.notifySubscribers(createdPost);
             return createdPost;
-
         } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityViolationException(e.getMessage());
+            // Log the error and throw a more user-friendly exception
+            throw new IllegalArgumentException("Failed to create post: " + e.getMostSpecificCause().getMessage());
         }
     }
 
     public Post updatePost(Post post) throws DataIntegrityViolationException {
+        if (post.getAuthor() == null) {
+            throw new IllegalArgumentException("Post author cannot be null");
+        }
+
+        // Add validation for title and content length
+        if (post.getTitle() != null && post.getTitle().length() > 150) {
+            throw new IllegalArgumentException("Title cannot exceed 150 characters");
+        }
+
+        if (post.getContent() != null && post.getContent().length() > 3000) {
+            throw new IllegalArgumentException("Content cannot exceed 3000 characters");
+        }
         try {
             Post updatedPost = this.postRepository.save(post);
             return updatedPost;
         } catch (DataIntegrityViolationException e) {
-            throw e;
+            throw new IllegalArgumentException("Failed to create post: " + e.getMostSpecificCause().getMessage());
         }
 
     }

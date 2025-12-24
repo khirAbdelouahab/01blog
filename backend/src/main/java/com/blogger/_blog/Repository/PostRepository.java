@@ -27,7 +27,7 @@ public interface PostRepository /*extends JpaRepository<Post, Long>*/ {
     @Query("SELECT DISTINCT p FROM Post p LEFT JOIN FETCH p.mediaUploads WHERE p.author.id = ?1 ORDER BY p.id DESC")
     public List<Post> findByAuthor(Long author);
 
-    @Query("SELECT DISTINCT p FROM Post p WHERE p.author.username = ?1 ORDER BY p.id DESC")
+    @Query("SELECT DISTINCT p FROM Post p WHERE p.state = 0 AND p.author.username = ?1 ORDER BY p.id DESC")
     public List<Post> findByAuthor(String authorName);
 
     @Query("SELECT p FROM Post p WHERE p.state != 1 AND (p.author.username =?1 OR p.author.id IN (SELECT  s.receiver.id FROM Subscribe s WHERE s.sender.username = ?1)) ORDER BY p.id DESC")

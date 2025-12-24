@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, HostListener, OnInit, signal } from '@angular/core';
 import { ReportDialogService, ReportLineData, ReportPostData } from '../../post/report-dialog/report-dialog.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -6,6 +6,8 @@ import { AdminPanelService, PostState } from '../admin-panel.service';
 import { Response } from '../../auth';
 import { ProfileService, UserDataResponse } from '../../profile/profile.service';
 import { PostDataResponse } from '../../post/post-service';
+import { ToastService } from '../../toast-component/toast.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-reports',
@@ -19,7 +21,7 @@ export class ReportsComponent implements OnInit {
   reportsList = computed(() => this.reports_List());
   loading = signal(true);
 
-  constructor(private reportService: ReportDialogService, private adminService: AdminPanelService, private profileService: ProfileService, private router: Router) { }
+  constructor(private toastService: ToastService, private reportService: ReportDialogService, private adminService: AdminPanelService, private profileService: ProfileService, private router: Router) { }
   ngOnInit(): void {
     this.getAllReports();
   }
@@ -63,7 +65,25 @@ export class ReportsComponent implements OnInit {
   onViewPost(postID: any) {
     this.router.navigate(['post/view', postID]);
   }
+  formatDate(date: string): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
 
+  // Close dropdown when clicking outside
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.actions-cell')) {
+      this.reportsList = computed(() => this.reports_List().map((report) => {
+        report.showMenu = false;
+        return report;
+      }));
+    }
+  }
   onDeletePost(postID: any) {
     const token = sessionStorage.getItem('authToken');
     if (!token) {
@@ -71,11 +91,17 @@ export class ReportsComponent implements OnInit {
     }
     this.adminService.deletePost(token, postID).subscribe({
       next: (response: Response) => {
-        console.log('response: ', response);
+        this.toastService.success("Post Deleted Succesfuly");
       },
-      error: (err) => {
-        console.error('error: ', err);
-
+      error: (err: HttpErrorResponse) => {
+        switch (err.status) {
+          case 404:
+            this.toastService.error(err.error.message);
+            break;
+        
+          default:
+            break;
+        }
       }
     });
   }
@@ -106,18 +132,18 @@ export class ReportsComponent implements OnInit {
   }
 
   hidePost(postID: any) {
-      const token = sessionStorage.getItem('authToken');
-      if (!token) {
-        return;
-      }
-      this.adminService.updatePostState(token, postID, PostState.HIDDEN).subscribe({
-        next: (updatedPost: PostDataResponse) => {
-          alert(`post ${updatedPost.title} is HIDDEN NOW`);
-        },
-        error: (err) => {
-          console.error('error: ', err);
-        }
-      });
+    const token = sessionStorage.getItem('authToken');
+    if (!token) {
+      return;
     }
-  
+    this.adminService.updatePostState(token, postID, PostState.HIDDEN).subscribe({
+      next: (updatedPost: PostDataResponse) => {
+        alert(`post ${updatedPost.title} is HIDDEN NOW`);
+      },
+      error: (err) => {
+        console.error('error: ', err);
+      }
+    });
+  }
+
 }

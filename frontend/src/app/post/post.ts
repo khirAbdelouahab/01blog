@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { ReportData, ReportDialogComponent } from './report-dialog/report-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDataRequest, ReportDialogService, ReportPostData, ReportReason } from './report-dialog/report-dialog.service';
+import { Response } from '../auth';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-post',
@@ -106,10 +108,17 @@ export class PostComponent {
       reason: this.convertReportReasonToEnum(reportData.reason)
     }
     this.reportService.createPostReport(token, data).subscribe({
-      next: (response: ReportPostData) => {
+      next: (response: Response) => {
+        
       },
-      error: (err) => {
-        console.error('error: ', err);
+     error: (err:HttpErrorResponse) => {
+        switch (err.status) {
+          case 400:
+            alert(err.error.message);
+            break;
+          default:
+            break;
+        }
       }
     });
   }

@@ -129,6 +129,10 @@ public class PostController {
             @RequestParam(value = "mediaContents", required = false) String mediaContents,
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             Authentication authentication) {
+                System.out.println("===================================");
+                System.out.println("           Post Created            ");
+                System.out.println("===================================");
+
         Post post = new Post(title, content, category);
         User user = userService.findByUsername(authentication.getName());
         post.setAuthor(user);
@@ -138,7 +142,9 @@ public class PostController {
                 return ResponseEntity.notFound().build();
             }
         } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body(new Response(false, "content or title data are too long"));
+            return ResponseEntity.badRequest().body(new Response(false, e.getMessage()));
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new Response(false, e.getMessage()));
         }
         try {
             String[] mediaContentsArray = new ObjectMapper().readValue(mediaContents, String[].class);

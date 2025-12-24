@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.blogger._blog.Repository.SubscribeRepository;
 import com.blogger._blog.details.PostDataResponse;
 import com.blogger._blog.details.ProfileFollowStats;
 import com.blogger._blog.details.Response;
@@ -53,10 +51,6 @@ public class ProfileController {
             return ResponseEntity.notFound().build();
         }
         try {
-            // Path filePath =
-            // Paths.get("/home/abouchik/Desktop/01-blogger/backend/profileImages/profileImage.jpeg");
-            // Path filePath =
-            // Paths.get("C:/Users/KHIRI/Desktop/01-blogger/backend/profileImages/profileImage.jpeg");
             Path filePath = Paths.get(user.getAvatar());
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists() && resource.isReadable()) {
