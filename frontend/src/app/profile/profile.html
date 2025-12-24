@@ -32,6 +32,9 @@
                 <button [class]="isFollowing? 'follow-btn unFollow userbtn':'follow-btn userbtn'" (click)="onFollow()">
                     {{isFollowing? 'UnFollow':'Follow'}}
                 </button>
+                <button [class]="isFollowing? 'follow-btn unFollow userbtn':'follow-btn userbtn'" (click)="onFollow()">
+                    Report
+                </button>
                 @if (isAdmin) {
                 <button class="ban-btn userbtn" (click)="banUser(profileData.userDataResponse)">
                     {{ profileData.userDataResponse.state == 'banned'? 'UnBan': 'Ban'}}

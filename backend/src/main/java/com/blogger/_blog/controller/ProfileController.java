@@ -32,7 +32,7 @@ import com.blogger._blog.service.ProfileService;
 import com.blogger._blog.service.UserAuthenticationService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/profile")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ProfileController {
     @Autowired
@@ -44,7 +44,7 @@ public class ProfileController {
     @Autowired
     private FollowingService followingService;
 
-    @GetMapping("/profile/image/{username}")
+    @GetMapping("/image/{username}")
     public ResponseEntity<Resource> getProfileImage(@PathVariable String username) {
         User user = this.userAuthenticationService.findByUsername(username);
         if (user == null) {
@@ -70,7 +70,7 @@ public class ProfileController {
         }
     }
 
-    @GetMapping("/profile/image/me")
+    @GetMapping("/image/me")
     public ResponseEntity<Resource> getMyProfileImage(Authentication authentication) {
         String username = null;
         if (authentication != null) {
@@ -119,7 +119,7 @@ public class ProfileController {
         }
     }
 
-    @GetMapping("/profile/info/{username}")
+    @GetMapping("/info/{username}")
     public ResponseEntity<UserProfileDataResponse> getUserProfile(@PathVariable String username,
             Authentication authentication) {
         List<PostDataResponse> postsDataResponse = this.postService.getThemByUser(username);
@@ -142,7 +142,7 @@ public class ProfileController {
         return ResponseEntity.ok(userProfileDataResponse);
     }
 
-    @GetMapping("/profile/info/me")
+    @GetMapping("/info/me")
     public ResponseEntity<UserProfileDataResponse> getConnectedUserProfile(Authentication authentication) {
         String username = authentication.getName();
         List<PostDataResponse> postsDataResponse = this.postService.getThemByUser(username);
@@ -158,7 +158,7 @@ public class ProfileController {
         return ResponseEntity.ok(userProfileDataResponse);
     }
 
-    @PostMapping("/profile/info/about")
+    @PostMapping("/info/about")
     public ResponseEntity<UserDataResponse> setAboutUser(@RequestBody UserDataResponse userDataResponse) {
         System.out.println("userDataResponse: " + userDataResponse.getAbout());
         UserDataResponse u = this.userAuthenticationService.updateUserAbout(userDataResponse);
@@ -168,7 +168,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(u);
     }
 
-    @PostMapping("/profile/info/image")
+    @PostMapping("/info/image")
     public ResponseEntity<Response> updateProfileImage(@RequestParam("file") MultipartFile file,
             Authentication authentication) {
         if (file == null) {
@@ -178,4 +178,10 @@ public class ProfileController {
         this.profileService.updateProfileImage(username, file);
         return ResponseEntity.ok().body(new Response(true, "image updated succesfuly"));
     }
+
+    @PostMapping("/report/{username}")
+    public ResponseEntity<Response> report(@PathVariable("username") String username, Authentication authentication) {
+        return ResponseEntity.ok().build();
+    }
+
 }
