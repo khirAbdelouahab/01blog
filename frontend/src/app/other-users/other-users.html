@@ -1,0 +1,54 @@
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>🌟 Discover People</h1>
+        <p>Connect with amazing developers and designers from around the world</p>
+    </div>
+
+    <!-- Users Grid -->
+    <div class="users-grid" id="usersGrid">
+        <!-- User Card 1 -->
+        @for (user of otherUsers$ | async ; track user.id) {
+        <div class="user-card" >
+            <div class="card-header" (click)="goToProfile(user.username)">
+                <img [src]="'http://localhost:8080/api/profile/image/' + user.username" [alt]="user.fullname" class="avatar">
+            </div>
+            <div class="card-body">
+                <div class="user-info">
+                    <div class="user-details">
+                        <h3>{{ user.fullname }}</h3>
+                        <span class="username">@{{ user.username }}</span>
+                    </div>
+                    <button [class]="!user.isFollowedByMe? 'follow-btn primary':'follow-btn following'" (click)="toggleFollow(user.username)">
+                        @if( user.isFollowedByMe) {
+                            <span>✓ Following</span>
+                        }@else {
+                            <span>+ Follow</span>
+                        }
+
+                    </button>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number">{{ user.followStats.followers }}</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">{{ user.followStats.following }}</span>
+                        <span class="stat-label">Following</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+
+
+    </div>
+
+    <!-- No Results Message -->
+    <div class="no-results" id="noResults" style="display: none;">
+        <h3>🔍 No users found</h3>
+        <p>Try adjusting your search or filter</p>
+    </div>
+</div>

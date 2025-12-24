@@ -1,0 +1,66 @@
+<div class="post-card" *ngIf="!loading()">
+    <div class="card-header">
+        <h1 class="card-title">Create New Post</h1>
+        <p class="card-subtitle">Share your thoughts with the world</p>
+    </div>
+    <form id="postForm">
+        <div class="form-group">
+            <label for="title" class="form-label">Post Title</label>
+            <input type="text" id="title" name="title" class="form-input" placeholder="Enter an engaging title..."
+                [(ngModel)]="postData.title" required>
+        </div>
+        <div class="form-group">
+            <label for="content" class="form-label">Content</label>
+            <textarea id="content" name="content" class="form-input form-textarea"
+                placeholder="What's on your mind? Share your story..." [(ngModel)]="postData.content"
+                required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-select" [(ngModel)]="postData.category" required>
+                <option value="">Select a category</option>
+                <option value="technology">Technology</option>
+                <option value="lifestyle">Lifestyle</option>
+                <option value="travel">Travel</option>
+                <option value="food">Food</option>
+                <option value="business">Business</option>
+                <option value="health">Health</option>
+                <option value="education">Education</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="media-uploaded-demo" *ngIf="!loading() && mediaUploaded.length > 0">
+            @for (media of mediaUploaded;track media.id) {
+                <!--here is media upload component-->
+                <app-media-upload *ngIf="media && media.url" (onContentChangeEvent)="onMediaChangeContent($event)" (onRemoveItemEvent)="onRemoveItem($event)" [media]="media"></app-media-upload>
+            }
+        </div>
+        <div class="form-group">
+            <label class="form-label">Media Upload</label>
+            <div class="file-upload">
+                <input type="file" id="media" name="media" class="file-input" accept="image/*,video/*"
+                    (change)="onFileChange($event)" multiple>
+                <label for="media" class="file-label">
+                    <svg class="file-icon" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="file-text">
+                        <strong>Click to upload</strong> or drag and drop<br>
+                        <span style="font-size: 12px; opacity: 0.7;">PNG, JPG, MP4 up to 10MB</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div id="preview" class="preview-section">
+            <div class="preview-title">Selected Files:</div>
+            <div id="fileList" class="preview-content"></div>
+        </div>
+        <div class="button-group">
+            <button type="button" class="btn btn-secondary" mat-button (click)="onCancel()">Cancel</button>
+            <button type="button" class="btn btn-primary" mat-raised-button (click)="onPublish()">Publish Post</button>
+        </div>
+    </form>
+</div>

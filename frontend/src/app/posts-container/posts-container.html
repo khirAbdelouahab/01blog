@@ -1,0 +1,8 @@
+<div class="posts-container">
+    @for (post of posts$ | async;track post.id) {
+        <app-post [postInfo]="post"></app-post>
+    }
+</div>
+
+
+

@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="header">
+        <h1>All Users ({{ usersList().length }})</h1>
+        <input type="text" class="search-box" placeholder="Search users..."
+            (input)="onSearchDataChange($event.target.value)">
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Join Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (user of usersList(); track user.userDataResponse.id) {
+            <tr>
+                <td data-label="Name">{{ user.userDataResponse.fullname }}</td>
+                <td data-label="Email">{{ user.userDataResponse.email }}</td>
+                <td data-label="Status">
+                    <span
+                        [class]="user.userDataResponse.state=='active'? 'status-badge status-active':'status-badge status-banned'">
+                        {{ user.userDataResponse.state }}
+                    </span>
+                </td>
+                <td data-label="Join Date">2024-01-15</td>
+                <td class="actions-cell">
+                    <button class="menu-btn" (click)="toggleDropdown(user.userDataResponse.id)">⋮</button>
+                    <div [class]="!user.showMenu? 'dropdown-menu':'dropdown-menu show'">
+                        <button
+                            [class]="(user.userDataResponse.state=='active')? 'dropdown-item ban':'dropdown-item unban'"
+                            (click)="banUser(user.userDataResponse)">
+                            @if(user.userDataResponse.state == "active") {
+                            Ban User
+                            } @else if(user.userDataResponse.state == "banned") {
+                            Active User
+                            }
+                        </button>
+                        <button class="dropdown-item remove" type="button" (click)="removeUser(user.userDataResponse.username)">
+                            Remove User
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

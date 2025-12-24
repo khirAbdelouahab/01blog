@@ -1,0 +1,43 @@
+<div class="report-popup">
+    <div class="popup-header">
+        <h2 #firstFocusable tabindex="-1">Report Post</h2>
+        <button class="close-btn" mat-dialog-close type="button" aria-label="Close dialog">&times;</button>
+    </div>
+
+    <div class="popup-content">
+        <p class="help-text">
+            Help us understand what's happening with this post. Your report is anonymous.
+        </p>
+
+        <div class="section-title">Why are you reporting this post?</div>
+
+        <mat-radio-group [formControl]="selectedReason" class="radio-group">
+            <div class="radio-option" *ngFor="let reason of reportReasons">
+                <mat-radio-button [value]="reason.value">
+                    {{ reason.label }}
+                </mat-radio-button>
+            </div>
+        </mat-radio-group>
+
+        <div class="textarea-container">
+            <div class="section-title">Additional details (optional)</div>
+            <textarea 
+                [formControl]="additionalDetails" 
+                class="details-textarea"
+                id="additional-details"
+                placeholder="Provide any additional context that might help us review this report...">
+            </textarea>
+        </div>
+    </div>
+
+    <div class="popup-footer">
+        <button class="btn btn-cancel" mat-dialog-close type="button">Cancel</button>
+        <button 
+            class="btn btn-submit" 
+            type="button"
+            [disabled]="!selectedReason.valid" 
+            (click)="onSubmit()">
+            Submit Report
+        </button>
+    </div>
+</div>

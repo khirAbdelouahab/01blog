@@ -1,0 +1,149 @@
+<div class="container" *ngIf="profileInfo$ | async as profileData">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-image-container">
+                <div class="profile-image" id="profileImage">
+                    @if (profileData && profileData.userDataResponse) {
+                    <img class="profile-avatar"
+                        [src]="'http://localhost:8080/api/profile/image/' + profileData.userDataResponse.username"
+                        alt="Alex Morgan">
+                    }
+                </div>
+                @if (profileData.isConnectedUser) {
+                <label for="fileInput" class="upload-overlay">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3566/3566505.png" alt="Upload">
+                </label>
+                <input type="file" id="fileInput" accept="image/*" (change)="onFileChange($event)">
+                }
+            </div>
+
+            <div class="profile-info">
+                <h1 class="profile-name">{{ profileData.userDataResponse.fullname }}
+                    @if (profileData.userDataResponse.role == "admin") {
+                    <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path fill="#8bc34a"
+                            d="M9 3L8 6H4l1 4l-3 2l3 2l-1 4h4l1 3l3-2l3 2l1-3h4l-1-4l3-2l-3-2l1-4h-4l-1-3l-3 2zm7 5l1 1l-7 7l-3-3l1-1l2 2z" />
+                    </svg>
+                    }
+                </h1>
+
+
+                @if (!profileData.isConnectedUser) {
+                <button [class]="isFollowing? 'follow-btn unFollow userbtn':'follow-btn userbtn'" (click)="onFollow()">
+                    {{isFollowing? 'UnFollow':'Follow'}}
+                </button>
+                @if (isAdmin) {
+                <button class="ban-btn userbtn" (click)="banUser(profileData.userDataResponse)">
+                    {{ profileData.userDataResponse.state == 'banned'? 'UnBan': 'Ban'}}
+                </button>
+                }
+
+                }
+                <div class="file-selected" id="fileSelected"></div>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number">{{ profileData.postDataResponse.length }}</span>
+                <span class="stat-label">Articles</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{profileData.profileFollowStats?.followers || 0}}</span>
+                <span class="stat-label">Followers</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{profileData.profileFollowStats?.following || 0}}</span>
+                <span class="stat-label">Following</span>
+            </div>
+        </div>
+    </div>
+    <!-- Profile Header -->
+    @if (profileData.isConnectedUser || state == "content" ) {
+    <div class="about-section">
+        <h2 class="section-title">About Me</h2>
+        <!-- Empty State (shown when no description) -->
+        @if(state == "empty") {
+        <div id="emptyState" class="about-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                <path fill="currentColor"
+                    d="M8 18h8v-2H8v2Zm0-4h8v-2H8v2Zm-2 8q-.825 0-1.413-.588T4 20V4q0-.825.588-1.413T6 2h8l6 6v12q0 .825-.588 1.413T18 22H6Zm7-13V4H6v16h12V9h-5ZM6 4v5v-5v16V4Z" />
+            </svg>
+            <h3>Tell your story</h3>
+            <p>Share more about yourself, your background, interests, and what drives your passion for writing. Help
+                your readers connect with you on a deeper level.</p>
+            <button class="btn-primary" (click)="showEditForm()">About Me</button>
+        </div>
+        } @else if (state == "content") {
+        <div id="filledContent" class="about-content">
+            <div class="about-content-header">
+                <div>
+                    {{ userDataResponse?.about }}
+                </div>
+                @if (profileData.isConnectedUser) {
+                <button class="btn-edit" (click)="editAbout()">✏️ Edit</button>
+                }
+            </div>
+            <p id="aboutDisplay"></p>
+        </div>
+        } @else {
+        <form id="editForm" class="about-form">
+            <div class="form-group">
+                <label for="aboutText">About Me</label>
+                <textarea id="aboutText" name="about"
+                    placeholder="Share your story, background, interests, and what you're passionate about..."
+                    [(ngModel)]="userDataResponse.about"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn-primary" (click)="saveAbout(profileData.userDataResponse.username)">Save</button>
+                <button class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+        }
+    </div>
+    }
+    <div class="articles-section">
+        <h2 class="section-title">Latest Articles</h2>
+        @if (profileData.postDataResponse.length == 0) {
+        <p style="margin-top: 20%; margin-left: 40%;">no article posted yet</p>
+        } @else {
+        @for(post of profileData.postDataResponse;track post.id) {
+        <div class="article-card">
+            <div class="image-hero" style="position: relative;" (click)="goToPostView(post.id)">
+                @if( post.mediaUploads.length > 0 ) {
+                @if(post.mediaUploads[0].type.toString()=='Image') {
+                <img class="article-image" [src]="'http://localhost:8080/api/media/file/' + post.mediaUploads[0]?.id"
+                    alt="Article image">
+                }@else if(post.mediaUploads[0].type.toString()=='Video') {
+                <video [attr.src]="'http://localhost:8080/api/media/file/' + post.mediaUploads[0]?.id" controls
+                    class="article-image"></video>
+                }
+                }
+
+            </div>
+            <div class="article-content">
+                <h3 class="article-title" (click)="goToPostView(post.id)"> {{ post.title }}</h3>
+                <p class="article-description" (click)="goToPostView(post.id)">{{ post.content }}</p>
+                <div class="article-meta">
+                    <span class="meta-item" (click)="onLike(post.id)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <g fill="none">
+                                <path fill="currentColor"
+                                    d="m15 10l-.986-.164A1 1 0 0 0 15 11v-1ZM4 10V9a1 1 0 0 0-1 1h1Zm16.522 2.392l.98.196l-.98-.196ZM6 21h11.36v-2H6v2ZM18.56 9H15v2h3.56V9Zm-2.573 1.164l.805-4.835L14.82 5l-.806 4.836l1.973.328ZM14.82 3h-.214v2h.214V3Zm-3.543 1.781L8.762 8.555l1.664 1.11l2.516-3.774l-1.665-1.11ZM7.93 9H4v2h3.93V9ZM3 10v8h2v-8H3Zm17.302 8.588l1.2-6l-1.96-.392l-1.2 6l1.96.392ZM8.762 8.555A1 1 0 0 1 7.93 9v2a3 3 0 0 0 2.496-1.336l-1.664-1.11Zm8.03-3.226A2 2 0 0 0 14.82 3v2l1.972.329ZM18.56 11a1 1 0 0 1 .981 1.196l1.961.392A3 3 0 0 0 18.561 9v2Zm-1.2 10a3 3 0 0 0 2.942-2.412l-1.96-.392a1 1 0 0 1-.982.804v2ZM14.606 3a4 4 0 0 0-3.329 1.781l1.665 1.11A2 2 0 0 1 14.606 5V3ZM6 19a1 1 0 0 1-1-1H3a3 3 0 0 0 3 3v-2Z" />
+                                <path stroke="currentColor" stroke-width="2" d="M8 10v10" />
+                            </g>
+                        </svg>
+                        {{ post.likes}}
+                    </span>
+                    <span class="meta-item" (click)="goToPostView(post.id)">
+                        <button class="action-btn">💬</button>
+                        {{ post.comments.length}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        }
+        }
+
+    </div>
+</div>

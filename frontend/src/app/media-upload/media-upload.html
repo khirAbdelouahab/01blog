@@ -1,0 +1,47 @@
+<div class="post-media" *ngIf="media">
+    @if (media && media.type == 'Image') {
+    <div class="media-uploaded-container">
+        @if (isAddContent) {
+            <textarea id="image-content" name="content" class="form-input form-textarea"
+                placeholder="What's on your mind? Share your story..." [(ngModel)]="content"
+                (ngModelChange)="onContentChange(media)"
+                required ></textarea>
+        }
+        <img [src]="media.url" alt="Web development trends" class="post-image">
+    </div>
+    } @else {
+    <div class="media-uploaded-container">
+        @if (isAddContent) {
+            <textarea id="video-content" name="content" class="form-input form-textarea"
+                placeholder="What's on your mind? Share your story..." [(ngModel)]="content"
+                (ngModelChange)="onContentChange(media)"
+                required ></textarea>
+        }
+        <video [attr.src]="media.url" controls class="post-video"></video>
+    </div>
+    }
+    <button class="menu-icon" (click)="toggleMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 16 16">
+            <path fill="currentColor"
+                d="M7 4c0-.139 0-.209.008-.267a.85.85 0 0 1 .724-.724c.059-.008.128-.008.267-.008s.21 0 .267.008a.85.85 0 0 1 .724.724c.008.058.008.128.008.267s0 .209-.008.267a.85.85 0 0 1-.724.724c-.058.008-.128.008-.267.008s-.209 0-.267-.008a.85.85 0 0 1-.724-.724C7 4.209 7 4.139 7 4m0 4c0-.139 0-.209.008-.267a.85.85 0 0 1 .724-.724c.059-.008.128-.008.267-.008s.21 0 .267.008a.85.85 0 0 1 .724.724c.008.058.008.128.008.267s0 .209-.008.267a.85.85 0 0 1-.724.724c-.058.008-.128.008-.267.008s-.209 0-.267-.008a.85.85 0 0 1-.724-.724C7 8.209 7 8.139 7 8m0 4c0-.139 0-.209.008-.267a.85.85 0 0 1 .724-.724c.059-.008.128-.008.267-.008s.21 0 .267.008a.85.85 0 0 1 .724.724c.008.058.008.128.008.267s0 .209-.008.268a.85.85 0 0 1-.724.724C8.208 13 8.138 13 8 13s-.209 0-.267-.008a.85.85 0 0 1-.724-.724C7 12.21 7 12.14 7 12" />
+        </svg>
+    </button>
+    <!-- Dropdown Menu -->
+    <div class="dropdown-menu" [class.show]="isMenuOpen">
+        <button class="menu-option" (click)="onRemove(media)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+            Remove
+        </button>
+        <button class="menu-option" (click)="onAddContent()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Content
+        </button>
+    </div>
+</div>

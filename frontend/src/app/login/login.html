@@ -1,0 +1,144 @@
+
+ <div class="main-container">
+        <!-- Left Panel - Login -->
+        <div class="left-panel">
+            <div class="container">
+                <!-- Logo Section -->
+                <div class="logo-section">
+                    <div class="logo">
+                        <span class="material-icons">edit</span>
+                    </div>
+                    <h1>BlogPlatform</h1>
+                    <p>Share your thoughts with the world</p>
+                </div>
+
+                <!-- Login Card -->
+                <div class="login-card">
+                    <h2 class="card-title">Welcome Back</h2>
+                    
+                    <form id="loginForm" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+                        <!-- Email Field -->
+                        <div class="form-group">
+                            <div class="input-field" id="emailField">
+                                <input type="email" id="email" placeholder="username" 
+              					name="username" 
+              					[(ngModel)]="username" 
+             					 required>
+                                <span class="material-icons">email</span>
+                                @if(isUsernNameFaild) {
+                                    <div class="error-message" id="emailError">Please enter a valid email</div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="form-group">
+                            <div class="input-field password-field" id="passwordField">
+                                <input type="password" id="password" placeholder="password" 
+              					name="password" 
+              					[(ngModel)]="password" 
+             					 required>
+                                <span class="material-icons">lock</span>
+                                <button type="button" class="password-toggle" id="passwordToggle">
+                                    <span class="material-icons">visibility</span>
+                                </button>
+                                @if (isPasswordFaild) {
+                                    <div class="error-message" id="passwordError">Password must be at least 6 characters</div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="error-message banned" *ngIf="isBanned() || isInvalidCredintials()"> {{ messageEroor }}</div>
+
+                        <!-- Login Button -->
+                        <button type="submit" class="login-btn" id="loginBtn">
+                            Sign In
+                        </button>
+                    </form>
+
+                   
+
+                    <!-- Sign Up Link -->
+                    <div class="signup-link">
+                        Don't have an account? <a (click)="goToRegister()">Create one</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Statistics -->
+        <div class="right-panel">
+            <div class="stats-header">
+                <h2>Platform Overview</h2>
+                <p>Real-time insights and analytics</p>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card users">
+                    <h3>Active Users</h3>
+                    <div class="number">12,453</div>
+                    <div class="change positive">↗ +12% this month</div>
+                </div>
+                <div class="stat-card posts">
+                    <h3>Total Posts</h3>
+                    <div class="number">8,927</div>
+                    <div class="change positive">↗ +8% this month</div>
+                </div>
+                <div class="stat-card engagement">
+                    <h3>Engagement Rate</h3>
+                    <div class="number">94.2%</div>
+                    <div class="change positive">↗ +2.1% this month</div>
+                </div>
+                <div class="stat-card growth">
+                    <h3>Monthly Growth</h3>
+                    <div class="number">15.8%</div>
+                    <div class="change negative">↘ -1.2% this month</div>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h3>User Activity Trends</h3>
+                </div>
+                <div class="chart-placeholder">
+                    📈 Interactive Chart Would Go Here
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <div class="chart-header">
+                    <h3>Recent Activity</h3>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <span class="material-icons">person_add</span>
+                    </div>
+                    <div class="activity-content">
+                        <h4>New user registered</h4>
+                        <p>Sarah Johnson joined the platform • 2 minutes ago</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <span class="material-icons">article</span>
+                    </div>
+                    <div class="activity-content">
+                        <h4>New blog post published</h4>
+                        <p>"10 Tips for Better Writing" by Mike Chen • 15 minutes ago</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <span class="material-icons">favorite</span>
+                    </div>
+                    <div class="activity-content">
+                        <h4>Post reached 100 likes</h4>
+                        <p>"The Future of Web Development" • 1 hour ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+ </div>

@@ -1,0 +1,12 @@
+<div  *ngIf="notificationInfo" [class]="notificationInfo?.read? 'notification-item':'notification-item unread'" (click)="markAsRead(notificationInfo?.id)">
+    <div class="notification-icon-wrapper">
+        <img class="profile-avatar"
+            [src]="'http://localhost:8080/api/profile/image/' + notificationInfo?.post?.author?.username"
+            alt="Alex Morgan">
+
+    </div>
+    <div class="notification-content" (click)="onNotificationClick(notificationInfo?.post?.id)">
+        <div class="notification-title">New Post</div>
+        <div class="notification-text">{{ notificationInfo?.content }}</div>
+    </div>
+</div>

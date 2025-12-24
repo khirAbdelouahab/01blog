@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="lock-icon">🔒</div>
+    <div class="error-code">401</div>
+    <h1>Unauthorized Access</h1>
+    <p>Sorry, you don't have permission to access this resource. Please authenticate or contact your administrator if
+        you believe this is an error.</p>
+
+    <div class="btn-container">
+        <button class="btn btn-primary" (click)="gologin()">Login</button>
+        <button class="btn btn-secondary" (click)="goHome()">Go Home</button>
+    </div>
+
+    <div class="info-box">
+        <h3>Why am I seeing this?</h3>
+        <ul>
+            <li>You are not logged in</li>
+            <li>Your session has expired</li>
+            <li>Invalid authentication token</li>
+            <li>You lack the required permissions</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="header" >
+        <h1>All Posts ({{(posts$ | async)?.length}})</h1>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Author Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (post of posts$ | async; track post.data.id) {
+            <tr>
+                <td>{{ post.data.id }}</td>
+                <td>{{ post.data.title }}</td>
+                <td><span
+                        [class]="post.data.state!='HIDDEN'? 'status-badge status-active':'status-badge status-banned'">
+                        @if(post.data.state=='HIDDEN') {
+                        HIDDEN
+                        }@else {
+                        ACTIVE
+                        }
+                    </span></td>
+                <td>{{ post.data.author.fullname }}</td>
+                <td class="actions-cell">
+                    <button class="menu-btn" (click)="toggleDropdown(post.data.id)">⋮</button>
+                    <div [class]="post.showMenu? 'dropdown-menu show':'dropdown-menu'">
+                        <button class="dropdown-item" (click)="goToPostVeiw(post.data.id)">view Post</button>
+                        <button [class]="post.data.state=='HIDDEN'? 'dropdown-item unban':'dropdown-item ban'" (click)="changePostState(post.data)">
+                            @if(post.data.state=='HIDDEN') {
+                            active post
+                            }@else {
+                            hide post
+                            }</button>
+                        <button class="dropdown-item remove" type="button" (click)="deletePost(post.data.id)">delete Post</button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
