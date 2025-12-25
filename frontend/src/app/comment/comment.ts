@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { PostService } from '../post/post-service';
 import { Response } from '../auth';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../toast-component/toast.service';
 
 @Component({
   selector: 'app-comment',
@@ -24,7 +25,7 @@ export class CommentComponent {
   onDeleteCommentEventHandler = output<number>();
 
   get commentInfo() { return this._comment; }
-  constructor(private postService:PostService, private commentService: CommentService) {}
+  constructor(private toastService: ToastService, private postService:PostService, private commentService: CommentService) {}
 
   onDelete(id: any) {
     const token = sessionStorage.getItem('authToken');
@@ -34,6 +35,7 @@ export class CommentComponent {
     this.commentService.deleteComment(token, id).subscribe({
       next: (response:Response) => {
         if (response.success) {
+          this.toastService.success("comment deleted succesfuly");
           this.onDeleteCommentEventHandler.emit(id as number);
         }
       }, 

@@ -12,6 +12,7 @@
 
 .comment-content {
     padding: 1.5rem;
+    position: relative;
 }
 
 /* Mobile first: adjust padding for smaller screens */
@@ -38,6 +39,13 @@
 .comment-info {
     flex: 1;
     min-width: 0; /* Allow text to wrap properly */
+    padding-right: 2rem; /* Add padding to prevent text overlap with delete button */
+}
+
+@media (max-width: 480px) {
+    .comment-info {
+        padding-right: 1.5rem;
+    }
 }
 
 .comment-meta {
@@ -135,6 +143,9 @@
 }
 
 .delete-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
     background: none;
     border: none;
     color: hsl(var(--muted-foreground));
@@ -145,8 +156,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: fit-content;
-    flex-shrink: 0; /* Prevent button from shrinking */
+    flex-shrink: 0;
+    z-index: 1;
 }
 
 /* Smaller touch target adjustment for mobile */
@@ -162,12 +173,16 @@
 }
 
 .delete-btn:hover {
-    background: hsl(var(--destructive) / 0.1);
-    color: hsl(var(--destructive));
+    background: hsl(0, 84%, 60%, 0.1);
+    color: hsl(0, 84%, 60%);
+}
+
+.delete-btn:active {
+    background: hsl(0, 84%, 60%, 0.2);
 }
 
 .delete-btn:focus {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid hsl(0, 84%, 60%);
     outline-offset: 2px;
 }
 

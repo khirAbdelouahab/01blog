@@ -59,7 +59,7 @@ export class ReportDialogService {
         'Content-Type': 'application/json'
       }
     };
-    return this.http.post<Response>(`${this.apiUrl}/report/post/new`,reportPostData,options);
+    return this.http.post<Response>(`${this.apiUrl}/report/post/new`, reportPostData,options);
   }
 
   createUserReport(token: string, reportUserData: ReportUserData) : Observable<ReportUserData>{

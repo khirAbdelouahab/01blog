@@ -1,7 +1,7 @@
 <div class="reports-container">
     <div class="header">
         <h1>All Reports ({{reportsList().length}})</h1>
-        <input type="text" class="search-box" placeholder="Search reports...">
+        <!-- <input type="text" class="search-box" placeholder="Search reports..."> -->
     </div>
 
     <table>
@@ -27,7 +27,7 @@
                 <td data-label="Date">{{ formatDate(report.report.created_at) }}</td>
                 <td class="actions-cell" data-label="">
                     <button class="menu-btn" (click)="toggleDropdown(report.report.id)">
-                        <span>Actions</span>
+                        
                         <span class="menu-icon">⋮</span>
                     </button>
                     <div [class]="report.showMenu ? 'dropdown-menu show' : 'dropdown-menu'">

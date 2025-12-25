@@ -105,7 +105,10 @@ export class BlogContentView implements OnInit {
 
       dialogRef.afterClosed().subscribe((result: ReportData) => {
         if (result) {
-          console.log('Report submitted:', result);
+          if (result.details.length >= 200) {
+            this.toastService.error("report reason is too long. max = 200 charachter");
+            return;
+          }
           this.submitReport(id, result);
         }
       });
@@ -125,11 +128,15 @@ export class BlogContentView implements OnInit {
     }
     this.reportService.createPostReport(token, data).subscribe({
       next: (response: Response) => {
+        this.toastService.success("report submitted succesfuly");
       },
       error: (err:HttpErrorResponse) => {
         switch (err.status) {
           case 400:
-            alert(err.error.message);
+            this.toastService.error(err.error.message);
+            break;
+          case 403:
+            this.toastService.error("403");
             break;
           default:
             break;
@@ -168,7 +175,7 @@ export class BlogContentView implements OnInit {
       postId: id
     }
     if (commentData.content.length >= 1000) {
-      alert("Comment 'Content' is too long");
+      this.toastService.error("Comment 'Content' is too long");
       return;
     }
     this.commentService.saveComment(token, commentData).subscribe({
@@ -190,13 +197,15 @@ export class BlogContentView implements OnInit {
       error: (err: HttpErrorResponse) => {
         switch (err.status) {
           case 404:
+            this.toastService.error("not found");
             this.goToHome();
             break;
           case 400:
-            alert(err.error.message);
+            this.toastService.error(err.error.message);
             this.goToHome();
             break;
           default:
+            this.toastService.error("something wrong");
             this.goToHome();
             break;
         }

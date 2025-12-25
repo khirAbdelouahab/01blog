@@ -32,7 +32,7 @@
                 <button [class]="isFollowing? 'follow-btn unFollow userbtn':'follow-btn userbtn'" (click)="onFollow()">
                     {{isFollowing? 'UnFollow':'Follow'}}
                 </button>
-                <button [class]="isFollowing? 'follow-btn unFollow userbtn':'follow-btn userbtn'" (click)="onFollow()">
+                <button [class]="isFollowing? 'follow-btn unFollow userbtn':'follow-btn userbtn'" (click)="onReportUser()">
                     Report
                 </button>
                 @if (isAdmin) {

@@ -8,6 +8,8 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,13 +24,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.blogger._blog.details.PostDataResponse;
 import com.blogger._blog.details.ProfileFollowStats;
+import com.blogger._blog.details.ReportDataRequest;
 import com.blogger._blog.details.Response;
 import com.blogger._blog.details.UserDataResponse;
 import com.blogger._blog.details.UserProfileDataResponse;
+import com.blogger._blog.model.Post;
 import com.blogger._blog.model.User;
 import com.blogger._blog.service.FollowingService;
 import com.blogger._blog.service.PostService;
 import com.blogger._blog.service.ProfileService;
+import com.blogger._blog.service.ReportPostService;
 import com.blogger._blog.service.UserAuthenticationService;
 
 @RestController
@@ -43,6 +48,8 @@ public class ProfileController {
     private ProfileService profileService;
     @Autowired
     private FollowingService followingService;
+    @Autowired
+    private ReportPostService reportPostService;
 
     @GetMapping("/image/{username}")
     public ResponseEntity<Resource> getProfileImage(@PathVariable String username) {
@@ -179,9 +186,25 @@ public class ProfileController {
         return ResponseEntity.ok().body(new Response(true, "image updated succesfuly"));
     }
 
-    @PostMapping("/report/{username}")
-    public ResponseEntity<Response> report(@PathVariable("username") String username, Authentication authentication) {
-        return ResponseEntity.ok().build();
+    @PostMapping("/report")
+    public ResponseEntity<Response> report(@RequestBody ReportDataRequest reportData, Authentication authentication) {
+        User user = this.userAuthenticationService.findByUsername(authentication.getName());
+        User reportedUser = this.userAuthenticationService.findById(reportData.getReportedId());
+        if (reportedUser == null || user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (reportedUser.getUsername().equals(user.getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't report yourself"));
+        }
+        try {
+            this.reportPostService.create(reportedUser, user, reportData.getReason(),
+                    reportData.getContent());
+            return ResponseEntity.ok().body(new Response(true, "report submitted succesfuly"));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.internalServerError().body(new Response(false, e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new Response(false, e.getMessage()));
+        }
     }
 
 }

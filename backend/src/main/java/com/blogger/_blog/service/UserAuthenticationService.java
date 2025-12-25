@@ -124,4 +124,12 @@ public class UserAuthenticationService {
     public void delete(User user) {
         this.userRepository.delete(user);
     }
+
+    public User findById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return this.userRepository.findById(id).orElse(null);
+    }
+
 }

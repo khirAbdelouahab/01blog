@@ -45,7 +45,7 @@ public class CommentController {
         }
         try {
             Comment comment =  this.commentService.createComment(data.getContent(), post, user);
-            CommentDataResponse commentConverted = CommentDataResponse.convert(comment); 
+            CommentDataResponse commentConverted = CommentDataResponse.convert(comment, authentication.getName()); 
             return ResponseEntity.ok().body(commentConverted);
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body(new Response(false, "comment 'Content' is too long"));

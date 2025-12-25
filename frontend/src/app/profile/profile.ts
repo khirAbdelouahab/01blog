@@ -6,7 +6,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../post/post-service';
-import { AuthService } from '../auth';
+import { AuthService, Response } from '../auth';
+import { ReportDataRequest, ReportReason } from '../post/report-dialog/report-dialog.service';
+import { ReportData, ReportDialogComponent } from '../post/report-dialog/report-dialog';
+import { ToastService } from '../toast-component/toast.service';
+import { MatDialog } from '@angular/material/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 
 enum AboutState {
   empty,
@@ -40,7 +45,7 @@ export class ProfileComponent implements OnInit {
   isAdmin: boolean = false;
   isFollowing: boolean = false;
 
-  constructor(private profileService: ProfileService, private authService: AuthService, private postService: PostService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private toastService:ToastService, private dialog: MatDialog, private profileService: ProfileService, private authService: AuthService, private postService: PostService, private router: Router, private route: ActivatedRoute) { }
   ngOnInit(): void {
     this.route.params
       .pipe(takeUntil(this.destroy$))
@@ -104,10 +109,103 @@ export class ProfileComponent implements OnInit {
         const s = this.convertDataToState(response.userDataResponse.about || '');
         this.changeAboutState(s);
       },
-      error: (err) => {
-        console.error('error: ', err);
+      error: (err: HttpErrorResponse) => {
+        switch (err.status) {
+          case 404:
+            this.toastService.error("this user not found");
+            this.router.navigate(['/home/feeds']);
+            break;
+          default:
+            this.toastService.error("something happen wrong");
+            this.router.navigate(['/home/feeds']);
+            break;
+        }
       }
     });
+  }
+
+  onReportUser(): void {
+    if (!this.userDataResponse?.id) {
+      return;
+    }
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    setTimeout(() => {
+      const dialogRef = this.dialog.open(ReportDialogComponent, {
+        width: '500px',
+        maxWidth: '90vw',
+        data: { postId: this.userDataResponse!.id.toString() },
+        hasBackdrop: true,
+        backdropClass: 'custom-backdrop', // Optional: for styling
+        panelClass: 'custom-dialog-container',
+        disableClose: false,
+        autoFocus: true,
+        restoreFocus: true
+      });
+
+      dialogRef.afterClosed().subscribe((result: ReportData) => {
+        if (result) {
+          if (result.details.length >= 200) {
+            this.toastService.error("report reason is too long. max = 200 charachter");
+            return;
+          }
+          this.submitReport(result);
+        }
+      });
+    }, 50);
+  }
+
+  private submitReport(reportData: ReportData): void {
+    const token = sessionStorage.getItem('authToken');
+    if (!token ) {
+      return;
+    }
+    const data: ReportDataRequest = {
+      content: reportData.details,
+      reportedId: this.userDataResponse.id,
+      reason: this.convertReportReasonToEnum(reportData.reason)
+    }
+    this.profileService.reportUser(token, data).subscribe({
+      next: (response: Response) => {
+        if (response.success) {
+            this.toastService.success("report submitted succesfuly");
+        }
+      },
+     error: (err:HttpErrorResponse) => {
+        switch (err.status) {
+          case 400:
+            this.toastService.error(err.error.message);
+            break;
+          case 403:
+            this.toastService.error("forbidden");
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  }
+
+  private convertReportReasonToEnum(reason: string): ReportReason {
+    switch (reason) {
+      case 'hate_speech':
+        return ReportReason.HateSpeechOrSymbols;
+      case 'spam':
+        return ReportReason.SpamOrMisleading;
+      case 'adult_content':
+        return ReportReason.AdultOrSexualContent;
+      case 'copyright':
+        return ReportReason.CopyrightViolation;
+      case 'harassment':
+        return ReportReason.HarassmentOrBullying;
+      case 'violence':
+        return ReportReason.ViolenceOrDangerousContent;
+      case 'other':
+        return ReportReason.Other;
+      default:
+        return ReportReason.Other;
+    }
   }
 
   getMyProfile() {

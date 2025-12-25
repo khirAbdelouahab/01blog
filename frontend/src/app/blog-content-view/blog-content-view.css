@@ -45,6 +45,7 @@ body {
     border-radius: 12px;
     padding: 30px;
     border: 1px solid #e0e0e0;
+    width: 100%;
 }
 
 .form-group {
@@ -56,6 +57,7 @@ body {
     font-weight: 500;
     color: #1a1a1a;
     margin-bottom: 8px;
+    font-size: 14px;
 }
 
 .form-group textarea {
@@ -78,6 +80,7 @@ body {
 .form-actions {
     display: flex;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .btn-secondary {
@@ -90,6 +93,8 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    flex: 1;
+    min-width: 120px;
 }
 
 .btn-secondary:hover {
@@ -107,6 +112,8 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    flex: 1;
+    min-width: 120px;
 }
 
 .btn-primary:hover {
@@ -170,6 +177,8 @@ body {
     line-height: 1.2;
     margin-bottom: 2rem;
     color: hsl(var(--foreground));
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .author-section {
@@ -192,6 +201,8 @@ body {
     border-radius: 50%;
     border: 2px solid hsl(262, 83%, 58%, 0.2);
     overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer;
 }
 
 .avatar img {
@@ -227,6 +238,7 @@ body {
     gap: 1rem;
     font-size: 0.875rem;
     color: hsl(var(--muted-foreground));
+    position: relative;
 }
 
 .meta-item {
@@ -247,6 +259,10 @@ body {
     transition: all 0.2s;
 }
 
+.separator:hover {
+    background-color: #e8e8e8;
+}
+
 .dropdown-menu {
     position: absolute;
     top: 100%;
@@ -255,8 +271,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 50px;
-    max-width: 107px;
+    min-width: 150px;
     display: none;
     z-index: 1000;
     margin-top: 4px;
@@ -265,7 +280,6 @@ body {
 .dropdown-menu.show {
     display: block;
 }
-
 
 .dropdown-item {
     padding: 10px 16px;
@@ -315,6 +329,8 @@ body {
     color: hsl(var(--foreground));
     font-size: 1.125rem;
     line-height: 1.75;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .content-body p {
@@ -372,7 +388,8 @@ body {
     background: hsl(var(--muted));
 }
 
-.media-container img,video {
+.media-container img,
+.media-container video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -385,6 +402,8 @@ body {
 .media-caption p {
     font-size: 0.875rem;
     color: hsl(var(--muted-foreground));
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Action Buttons */
@@ -438,65 +457,311 @@ body {
     gap: 1.5rem;
 }
 
-
-
-/* Responsive Design */
+/* Tablet Responsive (max-width: 768px) */
 @media (max-width: 768px) {
     .hero-section {
-        height: 300px;
+        height: 350px;
     }
 
     .blog-header {
-        margin-top: -64px;
+        margin-top: -80px;
+        margin-bottom: 2rem;
     }
 
     .blog-title {
-        font-size: 2rem;
+        font-size: 2.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .author-section {
+        gap: 0.75rem;
+    }
+
+    .avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .author-name {
+        font-size: 1rem;
+    }
+
+    .author-bio {
+        font-size: 0.8rem;
     }
 
     .content-card {
         padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
     }
 
     .content-body {
         font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .section-title {
+        font-size: 1.375rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .media-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .about-form {
+        padding: 24px;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+        font-size: 14px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 10px 24px;
+        font-size: 15px;
+    }
+
+    .comments-section .section-title {
+        font-size: 1.5rem;
+    }
+
+    .action-buttons {
+        gap: 0.75rem;
+    }
+
+    .dropdown-menu {
+        min-width: 140px;
+    }
+}
+
+/* Mobile Responsive (max-width: 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+
+    .hero-section {
+        height: 250px;
+    }
+
+    .blog-header {
+        margin-top: -50px;
+        margin-bottom: 1.5rem;
+    }
+
+    .blog-title {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        line-height: 1.3;
     }
 
     .author-section {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .author-info {
+        gap: 0.75rem;
+    }
+
+    .avatar {
+        width: 42px;
+        height: 42px;
+    }
+
+    .author-name {
+        font-size: 0.95rem;
+    }
+
+    .author-bio {
+        font-size: 0.75rem;
+    }
+
+    .meta-info {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .content-card {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 0.5rem;
+    }
+
+    .content-body {
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+    .content-body p {
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-title .icon {
+        width: 1.25rem;
+        height: 1.25rem;
     }
 
     .media-grid {
-        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .media-caption {
+        padding: 0.75rem;
+    }
+
+    .media-caption p {
+        font-size: 0.8rem;
     }
 
     .action-buttons {
         flex-direction: column;
         width: 100%;
+        gap: 0.5rem;
     }
 
     .action-btn {
         width: 100%;
         justify-content: center;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .action-btn .icon {
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+
+    .about-form {
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .form-group textarea {
+        padding: 10px;
+        font-size: 14px;
+        min-height: 90px;
+        border-radius: 6px;
+    }
+
+    .form-actions {
+        gap: 8px;
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .btn-primary:hover {
+        transform: none;
+    }
+
+    .comments-section {
+        margin-bottom: 2rem;
+    }
+
+    .comments-section .section-title {
+        font-size: 1.375rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .comments-section .section-title .icon {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .comments-list {
+        gap: 1rem;
+    }
+
+    .dropdown-menu {
+        min-width: 130px;
+        font-size: 13px;
+    }
+
+    .dropdown-item {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .separator {
+        padding: 5px 10px;
+        font-size: 13px;
     }
 }
 
-@media (max-width: 640px) {
-    .dashboard {
-        grid-template-columns: 1fr;
-        grid-template-rows: 70px 1fr;
-    }
-
-    .container {
-        padding: 0 1rem;
+/* Extra Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+    .hero-section {
+        height: 200px;
     }
 
     .blog-title {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+    }
+
+    .avatar {
+        width: 38px;
+        height: 38px;
+    }
+
+    .author-name {
+        font-size: 0.875rem;
     }
 
     .content-card {
-        padding: 1.5rem;
+        padding: 1.25rem 0.875rem;
+    }
+
+    .content-body {
+        font-size: 0.875rem;
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+    }
+
+    .about-form {
+        padding: 16px;
+    }
+
+    .form-group textarea {
+        padding: 8px;
+        font-size: 13px;
+        min-height: 80px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .action-btn {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.8125rem;
     }
 }

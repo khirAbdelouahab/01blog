@@ -17,7 +17,6 @@ import com.blogger._blog.details.ReportDataRequest;
 import com.blogger._blog.details.ReportPostData;
 import com.blogger._blog.details.Response;
 import com.blogger._blog.model.Post;
-import com.blogger._blog.model.PostReport;
 import com.blogger._blog.model.User;
 import com.blogger._blog.service.PostService;
 import com.blogger._blog.service.ReportPostService;

@@ -25,7 +25,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
-@Table(name = "postReport")
+@Table(name = "userReport")
 @EntityListeners(AuditingEntityListener.class)
 public class UserReport {
     @Id

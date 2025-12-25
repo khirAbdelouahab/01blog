@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReportDataRequest, ReportDialogService, ReportPostData, ReportReason } from './report-dialog/report-dialog.service';
 import { Response } from '../auth';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../toast-component/toast.service';
 
 @Component({
   selector: 'app-post',
@@ -27,7 +28,7 @@ export class PostComponent {
   private _postInfo: PostDataResponse | undefined;
   isLiked: boolean = false;
   likes$ = new BehaviorSubject<number>(0);
-  constructor(private postService: PostService, private router: Router, private dialog: MatDialog, private reportService: ReportDialogService) {
+  constructor(private toastService:ToastService , private postService: PostService, private router: Router, private dialog: MatDialog, private reportService: ReportDialogService) {
   }
   goToPostView(id: number) {
     this.router.navigate(['post/view', id]);
@@ -90,7 +91,10 @@ export class PostComponent {
 
       dialogRef.afterClosed().subscribe((result: ReportData) => {
         if (result) {
-          
+          if (result.details.length >= 200) {
+            this.toastService.error("report reason is too long. max = 200 charachter");
+            return;
+          }
           this.submitReport(result);
         }
       });
@@ -109,12 +113,17 @@ export class PostComponent {
     }
     this.reportService.createPostReport(token, data).subscribe({
       next: (response: Response) => {
-        
+        if (response.success) {
+            this.toastService.success("report submitted succesfuly");
+        }
       },
      error: (err:HttpErrorResponse) => {
         switch (err.status) {
           case 400:
-            alert(err.error.message);
+            this.toastService.error(err.error.message);
+            break;
+          case 403:
+            this.toastService.error("403");
             break;
           default:
             break;

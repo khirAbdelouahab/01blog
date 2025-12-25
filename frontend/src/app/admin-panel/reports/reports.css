@@ -18,6 +18,7 @@ body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-top: 20px;
+    overflow-x: auto; /* Enable horizontal scroll if needed */
 }
 
 .header {
@@ -49,10 +50,25 @@ h1 {
     border-color: #4a90e2;
 }
 
+/* Table wrapper for better control */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
+    /* table-layout: fixed; Fixed layout for better column control */
+    min-width: 600px; /* Minimum width before scrolling */
 }
+
+/* Column width distribution */
+th:nth-child(1), td:nth-child(1) { width: 15%; min-width: 120px; } /* Name */
+th:nth-child(2), td:nth-child(2) { width: 35%; min-width: 200px; } /* Content */
+th:nth-child(3), td:nth-child(3) { width: 15%; min-width: 100px; } /* Reason */
+th:nth-child(4), td:nth-child(4) { width: 15%; min-width: 100px; } /* Date */
+th:nth-child(5), td:nth-child(5) { width: 20%; min-width: 120px; } /* Actions */
 
 thead {
     border-bottom: 2px solid #e5e5e5;
@@ -80,6 +96,25 @@ td {
     padding: 16px;
     font-size: 14px;
     color: #333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Content text truncation */
+.content-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* Show full content on hover for desktop */
+@media (min-width: 769px) {
+    td:hover .content-text {
+        white-space: normal;
+        overflow: visible;
+    }
 }
 
 .status-badge {
@@ -88,6 +123,7 @@ td {
     border-radius: 12px;
     font-size: 12px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .status-active {
@@ -101,7 +137,7 @@ td {
 }
 
 .status-report {
-    background-color: #ffebee;
+    background-color: #fff3e0;
     color: #e48508;
 }
 
@@ -118,11 +154,19 @@ td {
     font-size: 14px;
     color: #333;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
 }
 
 .menu-btn:hover {
     background-color: #e8e8e8;
     border-color: #ccc;
+}
+
+.menu-icon {
+    font-weight: bold;
 }
 
 .dropdown-menu {
@@ -133,7 +177,7 @@ td {
     border: 1px solid #ddd;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 150px;
+    min-width: 160px;
     display: none;
     z-index: 1000;
     margin-top: 4px;
@@ -153,10 +197,11 @@ td {
     width: 100%;
     text-align: left;
     transition: background-color 0.2s;
+    white-space: nowrap;
 }
 
 .dropdown-item:hover {
-    background-color: #a7a1a1;
+    background-color: #f5f5f5;
 }
 
 .dropdown-item:first-child {
@@ -179,9 +224,40 @@ td {
     color: #f57c00;
 }
 
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state p {
+    font-size: 16px;
+}
+
 /* ========================================
    RESPONSIVE DESIGN - MOBILE FIRST
    ======================================== */
+
+/* Tablets (769px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .reports-container {
+        padding: 15px;
+    }
+
+    table {
+        min-width: 700px;
+    }
+
+    th, td {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+
+    .content-text {
+        max-width: 180px;
+    }
+}
 
 /* Tablets and below (768px) */
 @media screen and (max-width: 768px) {
@@ -192,6 +268,7 @@ td {
     .reports-container {
         padding: 15px;
         margin-top: 10px;
+        overflow-x: visible;
     }
 
     .header {
@@ -209,19 +286,22 @@ td {
         width: 100%;
     }
 
-    /* Hide table headers on mobile */
+    /* Hide table, show card layout */
+    table {
+        display: block;
+        min-width: auto;
+    }
+
     thead {
         display: none;
     }
 
-    /* Make table body display as cards */
-    tbody,
-    tr,
-    td {
+    tbody {
         display: block;
     }
 
     tbody tr {
+        display: block;
         margin-bottom: 20px;
         border: 1px solid #e5e5e5;
         border-radius: 8px;
@@ -236,11 +316,12 @@ td {
     }
 
     td {
-        padding: 8px 0;
-        border: none;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        padding: 10px 0;
+        border: none;
+        width: 100%;
     }
 
     /* Add labels before each cell */
@@ -251,8 +332,22 @@ td {
         font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-right: 10px;
+        margin-right: 15px;
         flex-shrink: 0;
+        min-width: 80px;
+    }
+
+    /* Content cell special styling */
+    td:nth-child(2) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .content-text {
+        white-space: normal;
+        max-width: 100%;
+        margin-top: 5px;
+        word-break: break-word;
     }
 
     /* Actions cell special styling */
@@ -261,6 +356,7 @@ td {
         padding-top: 15px;
         border-top: 1px solid #f0f0f0;
         margin-top: 10px;
+        flex-direction: column;
     }
 
     .actions-cell::before {
@@ -270,33 +366,95 @@ td {
     .menu-btn {
         width: 100%;
         padding: 10px;
+        justify-content: center;
     }
 
     .dropdown-menu {
         right: auto;
         left: 0;
         width: 100%;
+        min-width: auto;
     }
 }
 
 /* Small phones (480px and below) */
 @media screen and (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+
+    .reports-container {
+        padding: 10px;
+        border-radius: 6px;
+    }
+
     h1 {
         font-size: 18px;
+    }
+
+    .search-box {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    tbody tr {
+        padding: 12px;
+        margin-bottom: 15px;
     }
 
     td {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
+        padding: 8px 0;
     }
 
     td::before {
         margin-bottom: 5px;
+        margin-right: 0;
     }
 
     .status-badge {
         align-self: flex-start;
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+
+    .menu-btn {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .dropdown-item {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .empty-state {
+        padding: 40px 15px;
+    }
+
+    .empty-state p {
+        font-size: 14px;
+    }
+}
+
+/* Extra small devices (360px and below) */
+@media screen and (max-width: 360px) {
+    h1 {
+        font-size: 16px;
+    }
+
+    tbody tr {
+        padding: 10px;
+    }
+
+    td {
+        font-size: 13px;
+    }
+
+    td::before {
+        font-size: 11px;
     }
 }
 
@@ -304,6 +462,7 @@ td {
 @media screen and (min-width: 1400px) {
     .reports-container {
         padding: 40px;
+        max-width: 1400px;
     }
 
     h1 {
@@ -312,5 +471,13 @@ td {
 
     .search-box {
         width: 300px;
+    }
+
+    table {
+        min-width: 900px;
+    }
+
+    .content-text {
+        max-width: 400px;
     }
 }

@@ -3,13 +3,14 @@
   flex-direction: row;
   flex-wrap: wrap;
   gap: 20px;
+  padding: 0 15px;
 }
-
 
 .post {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid #ebeaea;
   max-width: 652px;
+  width: 100%;
   padding-bottom: 25px;
   margin: auto;
   transition: transform 0.3s ease;
@@ -24,14 +25,12 @@
   cursor: pointer;
   color: #666;
   transition: color 0.3s ease;
+  font-size: 14px;
+  padding: 8px;
 }
 
 .action-btn:hover {
   color: #667eea;
-}
-
-.multi-images {
-  
 }
 
 .multi-images .image-grid {
@@ -80,6 +79,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 15px;
+  cursor: pointer;
 }
 
 .post-avatar {
@@ -87,11 +87,13 @@
   height: 45px;
   border-radius: 50%;
   margin-right: 15px;
+  flex-shrink: 0;
 }
 
 .post-author {
   font-weight: 600;
   color: #333;
+  font-size: 16px;
 }
 
 .post-time {
@@ -100,9 +102,9 @@
 }
 
 .post-content {
-
   margin-bottom: 15px;
   line-height: 1.6;
+  cursor: pointer;
 }
 
 .post-title {
@@ -112,14 +114,19 @@
   color: #333;
 }
 
+.post-content p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .post-actions {
   display: flex;
   gap: 20px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .post-media {
-
   margin: 15px 0;
   border-radius: 12px;
   overflow: hidden;
@@ -145,4 +152,167 @@
   max-height: 400px;
   border-radius: 12px;
   outline: none;
+}
+
+/* Tablet styles (768px and below) */
+@media screen and (max-width: 768px) {
+  .posts-container {
+    gap: 15px;
+    padding: 0 10px;
+  }
+
+  .post {
+    max-width: 100%;
+    padding-bottom: 20px;
+  }
+
+  .post:hover {
+    transform: translateY(-2px);
+  }
+
+  .post-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .post-title {
+    font-size: 18px;
+  }
+
+  .post-author {
+    font-size: 15px;
+  }
+
+  .grid-image {
+    height: 150px;
+  }
+
+  .post-actions {
+    gap: 15px;
+  }
+
+  .action-btn {
+    font-size: 13px;
+    gap: 6px;
+  }
+}
+
+/* Mobile styles (480px and below) */
+@media screen and (max-width: 480px) {
+  .posts-container {
+    gap: 10px;
+    padding: 0 8px;
+  }
+
+  .post {
+    padding-bottom: 15px;
+  }
+
+  .post:hover {
+    transform: none;
+  }
+
+  .post-header {
+    margin-bottom: 12px;
+  }
+
+  .post-avatar {
+    width: 36px;
+    height: 36px;
+    margin-right: 12px;
+  }
+
+  .post-author {
+    font-size: 14px;
+  }
+
+  .post-time {
+    font-size: 12px;
+  }
+
+  .post-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .post-content {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .multi-images .image-grid {
+    gap: 6px;
+  }
+
+  .grid-image {
+    height: 120px;
+    border-radius: 6px;
+  }
+
+  .grid-image:hover {
+    transform: none;
+  }
+
+  .post-media {
+    margin: 12px 0;
+    border-radius: 8px;
+    max-height: 300px;
+  }
+
+  .post-image {
+    max-height: 300px;
+  }
+
+  .post-image:hover {
+    transform: none;
+  }
+
+  .post-video {
+    max-height: 300px;
+    border-radius: 8px;
+  }
+
+  .post-actions {
+    gap: 12px;
+  }
+
+  .action-btn {
+    font-size: 12px;
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .more-images {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+/* Small mobile (360px and below) */
+@media screen and (max-width: 360px) {
+  .post-title {
+    font-size: 15px;
+  }
+
+  .post-content {
+    font-size: 13px;
+  }
+
+  .grid-image {
+    height: 100px;
+  }
+
+  .post-image,
+  .post-video {
+    max-height: 250px;
+  }
+
+  .action-btn {
+    font-size: 11px;
+  }
 }

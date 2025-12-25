@@ -69,6 +69,17 @@ public class CommentDataResponse {
         return new CommentDataResponse(comment.getId(), comment.getContent(), comment.getCreated_at(), UserDataResponse.convert(comment.getAuthor()));
     }
 
+    public static CommentDataResponse convert(Comment comment,  String AuthorName) {
+        if (comment == null) {
+            return null;
+        }
+        CommentDataResponse c = new CommentDataResponse(comment.getId(), comment.getContent(), comment.getCreated_at(), UserDataResponse.convert(comment.getAuthor()));
+        if (c.getAuthor().getUsername().equals(AuthorName)) {
+                c.setIsCreatedByConnectedUser(true);
+            }
+        return c;
+    }
+
     public static List<CommentDataResponse> convert(List<Comment> comments) {
         if (comments == null) {
             return null;

@@ -57,7 +57,9 @@
    npx ng s
    ```
    - Angular dev server listens on `http://localhost:4200`
-
+3. **Both Servers**
+   ```bash
+   ./start-apps.sh
 4. **Media uploads**
    - Ensure `backend/uploads` exists (created automatically) and accessible for storing avatar/post media.
 
@@ -84,5 +86,7 @@
 │   ├── src/app/             # Core, features (feed, posts, profile, admin), shared components
 │   └── ...
 ├── docker-compose.yml
+├── start-apps.sh
 └── README.md
+
 ```

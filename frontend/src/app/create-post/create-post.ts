@@ -7,6 +7,7 @@ import { MediaType, MediaUpload, MediaUploadData, MediaUploadDataTransfer, Media
 import { MediaUploadComponent } from '../media-upload/media-upload';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../toast-component/toast.service';
 
 export interface DialogData {
   title: string;
@@ -38,7 +39,7 @@ export class CreatePost implements OnInit {
   mediaContents: MediaUploadDataTransfer[] = [];
   selectedFiles: File[] = [];
   previewUrl: any;
-  constructor(private postService: PostService, private router: Router, private route: ActivatedRoute) {
+  constructor(private toastService: ToastService, private postService: PostService, private router: Router, private route: ActivatedRoute) {
   }
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -123,7 +124,7 @@ export class CreatePost implements OnInit {
 
   onPublish(): void {
     if (!this.postData.title || !this.postData.content || !this.postData.category) {
-      alert('Please fill in all required fields');
+      this.toastService.error('Please fill in all required fields');
       return;
     }
    
@@ -133,7 +134,19 @@ export class CreatePost implements OnInit {
       } 
       return media;
     })
-    
+    if (this.postData.title.length >= 150) {
+      this.toastService.error("title is to long. max = 150 charachter");
+      return;
+    }
+    if (this.postData.content.length >= 3000) {
+      this.toastService.error("content is to long. max = 3000 charachter");
+      return;
+    }
+
+    if (this.postData.category.length >= 30) {
+      this.toastService.error("category is to long. max = 30 charachter");
+      return;
+    }
     if (this.isUpdateMode) {
       this.postService.updatePost(this.postId, this.postData, this.mediaUploaded);
     } else {
