@@ -325,7 +325,7 @@ export class BlogContentView implements OnInit {
     if (!token) {
       return;
     }
-    this.adminService.updatePostState(token, postID, PostState.HIDDEN).subscribe({
+    this.adminService.updatePostState(token, postID).subscribe({
       next: (updatedPost: PostDataResponse) => {
         alert(`post ${updatedPost.title} is HIDDEN NOW`);
       },
@@ -362,7 +362,5 @@ export class BlogContentView implements OnInit {
   editPost(postID: any) {
     this.router.navigate(['/home/post/create', postID]);
   }
-
-  
 
 }

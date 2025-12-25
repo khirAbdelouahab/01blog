@@ -7,8 +7,8 @@ import { PostDataResponse } from '../post/post-service';
 
 
 export enum PostState {
-    HIDDEN,
-    VISIBLE
+  VISIBLE,
+  HIDDEN
 }
 @Injectable({
   providedIn: 'root'
@@ -46,13 +46,13 @@ export class AdminPanelService {
     return this.http.delete<Response>(`${this.apiUrl}/admin/posts/delete/${postId}`, options);
   }
 
-  updatePostState(token : string, PostID: any, state: PostState) : Observable<PostDataResponse> {
+  updatePostState(token : string, PostID: any) : Observable<PostDataResponse> {
     const options = {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json' 
       }
     };
-    return this.http.post<any>(`${this.apiUrl}/admin/post/${PostID}/update/state`, state, options);
+    return this.http.post<any>(`${this.apiUrl}/admin/post/${PostID}/update/state`,{}, options);
   }
 }

@@ -3,34 +3,61 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+
 import com.blogger._blog.enums.UserRole;
 import com.blogger._blog.enums.UserState;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 
 @Entity
 @Table(name = "users")
 public class User  {
-    @Id
+      @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true,length = 20)
+    
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
+    
+    @Column(nullable = false, unique = true, length = 20)
     private String username;
+    
+    @NotBlank(message = "Full name is required")
+    @Size(min = 2, max = 30, message = "Full name must be between 2 and 30 characters")
     @Column(nullable = false, length = 30)
     private String fullname;
+    
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    @Size(max = 100, message = "Email cannot exceed 100 characters")
     @Column(nullable = false, unique = true)
     private String email;
+    
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     @Column(nullable = false)
     private String password;
     private String avatar;
     private UserRole role;
-    @Column(nullable = true,length = 5000)
+    @Size(max = 5000, message = "About section cannot exceed 5000 characters")
+    @Column(nullable = true, length = 5000)
     private String about;
     @Column(nullable = true)
     private UserState state;
+
+    @OneToMany(mappedBy = "reportedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserReport> reportsAboutMe;
+    
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserReport> reportsICreated;
     
     public User() {
+        this.role = UserRole.user;      // Set default role
+        this.state = UserState.active;
     }
-    public User(String fullname,String username, String email, String password,UserState state) {
+    public User(String fullname,String username, String email, String password, UserState state) {
         this.fullname = fullname;
         this.username = username;
         this.email = email;

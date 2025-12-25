@@ -168,15 +168,12 @@ public class PostService {
         }
     }
 
-    public void updatePostState(Post post, PostState newState) {
+    public Post updatePostState(Post post, PostState newState) {
         if (post != null) {
             post.setState(newState);
             this.postRepository.save(post);
-            System.out.println("==================");
-            System.out.println("==================");
-
-            System.out.println("post updated : " + post.getState());
         }
+        return post;
     }
 
     public void deletePost(Post post) {

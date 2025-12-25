@@ -19,14 +19,14 @@ cleanup() {
 trap cleanup SIGINT SIGTERM
 
 echo "Starting Spring Boot application..."
-cd /home/abouchik/Desktop/01blog/backend
-#cd /c/Users/KHIRI/Desktop/01blog/backend
+#cd /home/abouchik/Desktop/01blog/backend
+cd /c/Users/KHIRI/Desktop/01blog/backend
 ./mvnw spring-boot:run &
 SPRING_PID=$!
 
 echo "Starting Angular application..."
-cd /home/abouchik/Desktop/01blog/frontend
-#cd /c/Users/KHIRI/Desktop/01blog/frontend
+#cd /home/abouchik/Desktop/01blog/frontend
+cd /c/Users/KHIRI/Desktop/01blog/frontend
 
 npm start &
 ANGULAR_PID=$!

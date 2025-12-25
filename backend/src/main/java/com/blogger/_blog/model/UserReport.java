@@ -35,7 +35,7 @@ public class UserReport {
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
+    @OnDelete(action = OnDeleteAction.CASCADE) 
     private User reportedUser;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)

@@ -106,7 +106,7 @@ public class AdminController {
         return ResponseEntity.ok().body(list);
     }
 
-    @PostMapping("/post/{id}/update/state") 
+    /*@PostMapping("/post/{id}/update/state") 
     public ResponseEntity<PostDataResponse> updatePostState(@PathVariable("id") Long id, @RequestBody PostState newState, Authentication authentication) {
         Post post = this.postService.getById(id);
         if (post == null) {
@@ -116,6 +116,21 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         this.postService.updatePostState(post, newState);
+        return ResponseEntity.ok().body(PostDataResponse.convert(post));
+    }*/
+
+    @PostMapping("/post/{id}/update/state") 
+    public ResponseEntity<PostDataResponse> updatePostState2(@PathVariable("id") Long id, Authentication authentication) {
+        Post post = this.postService.getById(id);
+        if (post == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (post.getAuthor().getUsername().equals(authentication.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        PostState newState = (post.getState().equals(PostState.HIDDEN))? PostState.VISIBLE:PostState.HIDDEN;
+        
+        post = this.postService.updatePostState(post, newState);
         return ResponseEntity.ok().body(PostDataResponse.convert(post));
     }
 }

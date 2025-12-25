@@ -25,6 +25,13 @@ public class UserAuthenticationService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
     public User createUser(User user) {
+
+        try {
+            this.validateUser(user);       
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole(UserRole.user);
         user.setState(UserState.active);
@@ -33,7 +40,31 @@ public class UserAuthenticationService {
     }
 
     public User save(User user) {
-        return this.userRepository.save(user);
+        try {
+            return this.userRepository.save(user);
+            
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+     
+    
+    private void validateUser(User user) {
+        // Validate username
+        if (!user.getUsername().matches("^[a-zA-Z0-9_]+$")) {
+            throw new IllegalArgumentException("Username can only contain letters, numbers, and underscores");
+        }
+        
+        // Validate fullname
+        if (!user.getFullname().matches("^[a-zA-Z\\s]+$")) {
+            throw new IllegalArgumentException("Full name can only contain letters and spaces");
+        }
+        
+        // Validate password strength
+        if (!user.getPassword().matches("^[a-zA-Z0-9_]+$")) {
+            throw new IllegalArgumentException("Password can only contain letters, numbers, and underscores");
+        }
     }
 
     public String extractUsername(String token) {

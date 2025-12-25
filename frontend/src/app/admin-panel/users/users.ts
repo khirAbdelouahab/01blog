@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ToastService } from '../../toast-component/toast.service';
 
 interface UserLineData {
   userDataResponse: UserDataResponse,
@@ -27,7 +28,7 @@ export class UsersComponent implements OnInit {
   loading = signal(true);
   private isDeleting = false;
 
-  constructor(private profileService: ProfileService,private router: Router, private adminService: AdminPanelService, private dialog: MatDialog) {
+  constructor(private toast: ToastService, private profileService: ProfileService, private router: Router, private adminService: AdminPanelService, private dialog: MatDialog) {
   }
   ngOnInit(): void {
     this.getAllUsers();
@@ -60,17 +61,17 @@ export class UsersComponent implements OnInit {
     })
   }
 
-  openConfirmationDialog() : Observable<boolean> {
-    
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-          width: '400px',
-          data: {
-            title: 'Delete User',
-            message: 'Are you sure you want to delete this user?'
-          }
-        });
-        return dialogRef.afterClosed();
+  openConfirmationDialog(): Observable<boolean> {
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete User',
+        message: 'Are you sure you want to delete this user?'
       }
+    });
+    return dialogRef.afterClosed();
+  }
   removeUser(username: string) {
     if (this.isDeleting) {
       return;
@@ -82,23 +83,26 @@ export class UsersComponent implements OnInit {
     this.isDeleting = true;
 
     this.openConfirmationDialog().subscribe(result => {
-    this.isDeleting = false;
+      this.isDeleting = false;
 
       if (result) {
         this.adminService.deleteUser(token, username).subscribe({
-        next: (response: Response) => {
-      
-        const arrayOfUsers: UserLineData[] = this.users_array().filter(user => {
-          return user.userDataResponse.username != username;
-        })
-        this.users_array.set(arrayOfUsers);
-      },
-      error: (err) => {
-      }
-    });
+          next: (response: Response) => {
+            if (response.success) {
+              this.toast.success("user deleted succesfuly");
+              const arrayOfUsers: UserLineData[] = this.users_array().filter(user => {
+                return user.userDataResponse.username != username;
+              })
+              this.users_array.set(arrayOfUsers);
+            }
+
+          },
+          error: (err) => {
+          }
+        });
       }
     })
-    
+
   }
 
   toggleDropdown(id: any) {
@@ -133,7 +137,8 @@ export class UsersComponent implements OnInit {
     }
     this.profileService.updateUserState(token, userData).subscribe({
       next: (res) => {
-        console.log('res: ', res);
+        this.toast.success("userState Updated succesfuly");
+
       },
       error: (err) => {
       }

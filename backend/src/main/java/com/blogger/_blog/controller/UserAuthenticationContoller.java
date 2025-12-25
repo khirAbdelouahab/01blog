@@ -10,6 +10,7 @@ import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class UserAuthenticationContoller {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Response> register(@RequestBody User registerRequest) {
+    public ResponseEntity<Response> register(@Validated @RequestBody User registerRequest) {
         if (this.userService.existsByUsername(registerRequest.getUsername())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Response(false,
                     String.format("Username {%s} is already taken", registerRequest.getUsername())));
@@ -51,9 +52,12 @@ public class UserAuthenticationContoller {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Response(false,
                     String.format("Email {%s} is already taken", registerRequest.getEmail())));
         }
-
-        User created = userService.createUser(registerRequest);
-        return ResponseEntity.ok(new Response(true, "Register successful: " + created.getId()));
+        try {
+            User created = userService.createUser(registerRequest);
+            return ResponseEntity.ok(new Response(true, "Register successful: " + created.getId()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new Response(false, e.getMessage()));
+        }
     }
 
     @GetMapping("/all")

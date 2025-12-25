@@ -6,6 +6,7 @@ import com.blogger._blog.details.PostDataResponse;
 import com.blogger._blog.details.PostDataResponseView;
 import com.blogger._blog.details.Response;
 import com.blogger._blog.enums.PostState;
+import com.blogger._blog.enums.UserRole;
 import com.blogger._blog.enums.UserState;
 import com.blogger._blog.model.Post;
 import com.blogger._blog.model.Reaction;
@@ -65,8 +66,8 @@ public class PostController {
         if (p == null) {
             return ResponseEntity.notFound().build();
         }
-
-        if (p.getPost().getState().equals(PostState.HIDDEN)) {
+        User ConnectedUser = this.userService.findByUsername(username);
+        if (p.getPost().getState().equals(PostState.HIDDEN) && !ConnectedUser.getRole().equals(UserRole.admin)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (p.getPost().getAuthor().getUsername().equals(username)) {

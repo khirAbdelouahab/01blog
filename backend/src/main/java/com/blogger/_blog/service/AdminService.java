@@ -1,10 +1,8 @@
 package com.blogger._blog.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.blogger._blog.details.PostDataResponse;
 import com.blogger._blog.details.UserDataResponse;
 import com.blogger._blog.enums.UserState;
@@ -39,7 +37,17 @@ public class AdminService {
         User user = this.uService.findByUsername(username);
         if (user != null) {
             user.setState(state);
-            this.uService.save(user);
+            try {
+                this.uService.save(user);
+            } catch (IllegalArgumentException e) {
+               System.out.println("==========================");
+               System.out.println("=======    ERROR   =======");
+               System.out.println("==========================");
+
+               System.out.println(e.getMessage());
+
+
+            }           
         }
     }
 

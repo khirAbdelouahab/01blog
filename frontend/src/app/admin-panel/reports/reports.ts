@@ -142,7 +142,6 @@ export class ReportsComponent implements OnInit {
 }
 
   banUser(user: any) {
-    console.log('user: ', user);
     if (user.state == "banned") {
       user.state = "active";
     } else {
@@ -158,7 +157,7 @@ export class ReportsComponent implements OnInit {
     }
     this.profileService.updateUserState(token, userData).subscribe({
       next: (res) => {
-        console.log('res: ', res);
+          this.toastService.success("User State updated succesfuly");
       },
       error: (err: HttpErrorResponse) => {
         switch (err.status) {
@@ -179,41 +178,16 @@ export class ReportsComponent implements OnInit {
     })
   }
 
-
-
   updatePostState(postID: any) {
     console.log("post id = ", postID);
-    
-    const post: PostDataResponse | undefined = this.reports_List().find(r => 
-        r.report.post.id === postID
-      )?.report.post;
-
-
-      if (post) {
-        if (post.state === PostState.HIDDEN.toString()) {
-          this.activePost(postID);
-        } else {
-          this.hidePost(postID);
-        }
-      }
-    
-  }
-  activePost(postID: any) {
     const token = sessionStorage.getItem('authToken');
     if (!token) {
       return;
     }
-    this.adminService.updatePostState(token, postID, PostState.VISIBLE).subscribe({
+    this.adminService.updatePostState(token, postID).subscribe({
       next: (updatedPost: PostDataResponse) => {
-        this.toastService.success(`post ${updatedPost.title} is VISIBLE NOW`);
-
-        const updatedReports = this.reports_List().map(
-              reportLine => { if (reportLine.report.post.id === postID) {
-                reportLine.report.post.state = PostState.VISIBLE.toString();
-              }return reportLine;}
-              
-            );
-            this.reports_List.set(updatedReports);
+        this.toastService.success(`post ${updatedPost.title} is ${updatedPost.state} NOW`);
+        this.getAllReports();
       },
       error: (err:HttpErrorResponse) => {
         switch (err.status) {
@@ -234,43 +208,7 @@ export class ReportsComponent implements OnInit {
         }
       }
     });
-  }
-  hidePost(postID: any) {
-    const token = sessionStorage.getItem('authToken');
-    if (!token) {
-      return;
-    }
-    this.adminService.updatePostState(token, postID, PostState.HIDDEN).subscribe({
-      next: (updatedPost: PostDataResponse) => {
-        this.toastService.success(`post ${updatedPost.title} is HIDDEN NOW`);
 
-        const updatedReports = this.reports_List().map(
-              reportLine => { if (reportLine.report.post.id === postID) {
-                reportLine.report.post.state = PostState.HIDDEN.toString();
-              }return reportLine;}
-              
-            );
-            this.reports_List.set(updatedReports);
-      },
-      error: (err:HttpErrorResponse) => {
-        switch (err.status) {
-          case 403:
-            if (err.error?.message) {
-              this.toastService.error(err.error.message);
-            } else {
-              this.toastService.error("you can't do this operation");
-            }
-            break;
-          default:
-            if (err.error.message) {
-              this.toastService.error(err.error.message);
-            } else {
-              this.toastService.error("something happen wrong");
-            }
-            break;
-        }
-      }
-    });
-  }
-
+    
+  } 
 }

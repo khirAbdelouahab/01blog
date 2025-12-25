@@ -33,6 +33,7 @@ public class Comment {
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Post post;
     @ManyToOne(fetch = FetchType.LAZY)

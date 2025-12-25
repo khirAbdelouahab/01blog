@@ -71,9 +71,7 @@ export class PostsComponent implements OnInit {
     if (!token) {
       return;
     }
-
-    const state = post.state == 'HIDDEN' ? PostState.VISIBLE : PostState.HIDDEN;
-    this.adminService.updatePostState(token, post.id, state).subscribe({
+    this.adminService.updatePostState(token, post.id).subscribe({
       next: (updatedPost: PostDataResponse) => {
         this.toastService.success('Post Updated successfully!');
         const newArray = this.posts$.value.map((p) => {
