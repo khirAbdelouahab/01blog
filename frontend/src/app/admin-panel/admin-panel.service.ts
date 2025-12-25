@@ -7,7 +7,6 @@ import { PostDataResponse } from '../post/post-service';
 
 
 export enum PostState {
-    NEW,
     HIDDEN,
     VISIBLE
 }

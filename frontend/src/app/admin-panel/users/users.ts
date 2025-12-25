@@ -65,8 +65,8 @@ export class UsersComponent implements OnInit {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
           width: '400px',
           data: {
-            title: 'Delete Post',
-            message: 'Are you sure you want to delete this post?'
+            title: 'Delete User',
+            message: 'Are you sure you want to delete this user?'
           }
         });
         return dialogRef.afterClosed();

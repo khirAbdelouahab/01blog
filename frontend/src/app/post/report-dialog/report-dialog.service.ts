@@ -27,7 +27,7 @@ export interface ReportPostData {
 }
 
 export interface ReportLineData {
-  report:any;
+  report:ReportPostData;
   showMenu:boolean;
 }
 

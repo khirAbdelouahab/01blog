@@ -8,6 +8,9 @@ import { ProfileService, UserDataResponse } from '../../profile/profile.service'
 import { PostDataResponse } from '../../post/post-service';
 import { ToastService } from '../../toast-component/toast.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-reports',
@@ -16,15 +19,20 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './reports.css'
 })
 export class ReportsComponent implements OnInit {
+  PostState = PostState;
+  
+  // Or expose as readonly
+  readonly postState = PostState;
   //users_array = signal<UserLineData[]>([]);
   reports_List = signal<ReportLineData[]>([]);
   reportsList = computed(() => this.reports_List());
   loading = signal(true);
 
-  constructor(private toastService: ToastService, private reportService: ReportDialogService, private adminService: AdminPanelService, private profileService: ProfileService, private router: Router) { }
+  constructor(private dialog: MatDialog, private toastService: ToastService, private reportService: ReportDialogService, private adminService: AdminPanelService, private profileService: ProfileService, private router: Router) { }
   ngOnInit(): void {
     this.getAllReports();
   }
+  
 
   getAllReports() {
     const token = sessionStorage.getItem('authToken');
@@ -84,27 +92,54 @@ export class ReportsComponent implements OnInit {
       }));
     }
   }
-  onDeletePost(postID: any) {
-    const token = sessionStorage.getItem('authToken');
-    if (!token) {
-      return;
-    }
-    this.adminService.deletePost(token, postID).subscribe({
-      next: (response: Response) => {
-        this.toastService.success("Post Deleted Succesfuly");
-      },
-      error: (err: HttpErrorResponse) => {
-        switch (err.status) {
-          case 404:
-            this.toastService.error(err.error.message);
-            break;
-        
-          default:
-            break;
-        }
-      }
-    });
+
+
+  openConfirmationDialog() : Observable<boolean> {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Post',
+        message: 'Are you sure you want to delete this Post?'
+          }
+      });
+      return dialogRef.afterClosed();
   }
+  onDeletePost(postID: any) {
+  const token = sessionStorage.getItem('authToken');
+  if (!token) {
+    return;
+  }
+
+  this.openConfirmationDialog().subscribe({
+    next: (result) => {
+      if (result) {
+        this.adminService.deletePost(token, postID).subscribe({
+          next: (response: Response) => {
+            this.toastService.success("Post Deleted Successfully");
+            const updatedReports = this.reports_List().filter(
+              reportLine => reportLine.report.post.id !== postID
+            );
+            this.reports_List.set(updatedReports);
+             
+          },
+          error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 404:
+                this.toastService.error(err.error.message);
+                break;
+              default:
+                this.toastService.error("Failed to delete post");
+                break;
+            }
+          }
+        });
+      }
+    },
+    error: (err) => {
+      this.toastService.error("Failed to open confirmation dialog");
+    }
+  });
+}
 
   banUser(user: any) {
     console.log('user: ', user);
@@ -144,6 +179,62 @@ export class ReportsComponent implements OnInit {
     })
   }
 
+
+
+  updatePostState(postID: any) {
+    console.log("post id = ", postID);
+    
+    const post: PostDataResponse | undefined = this.reports_List().find(r => 
+        r.report.post.id === postID
+      )?.report.post;
+
+
+      if (post) {
+        if (post.state === PostState.HIDDEN.toString()) {
+          this.activePost(postID);
+        } else {
+          this.hidePost(postID);
+        }
+      }
+    
+  }
+  activePost(postID: any) {
+    const token = sessionStorage.getItem('authToken');
+    if (!token) {
+      return;
+    }
+    this.adminService.updatePostState(token, postID, PostState.VISIBLE).subscribe({
+      next: (updatedPost: PostDataResponse) => {
+        this.toastService.success(`post ${updatedPost.title} is VISIBLE NOW`);
+
+        const updatedReports = this.reports_List().map(
+              reportLine => { if (reportLine.report.post.id === postID) {
+                reportLine.report.post.state = PostState.VISIBLE.toString();
+              }return reportLine;}
+              
+            );
+            this.reports_List.set(updatedReports);
+      },
+      error: (err:HttpErrorResponse) => {
+        switch (err.status) {
+          case 403:
+            if (err.error?.message) {
+              this.toastService.error(err.error.message);
+            } else {
+              this.toastService.error("you can't do this operation");
+            }
+            break;
+          default:
+            if (err.error.message) {
+              this.toastService.error(err.error.message);
+            } else {
+              this.toastService.error("something happen wrong");
+            }
+            break;
+        }
+      }
+    });
+  }
   hidePost(postID: any) {
     const token = sessionStorage.getItem('authToken');
     if (!token) {
@@ -151,7 +242,15 @@ export class ReportsComponent implements OnInit {
     }
     this.adminService.updatePostState(token, postID, PostState.HIDDEN).subscribe({
       next: (updatedPost: PostDataResponse) => {
-        this.toastService.error(`post ${updatedPost.title} is HIDDEN NOW`);
+        this.toastService.success(`post ${updatedPost.title} is HIDDEN NOW`);
+
+        const updatedReports = this.reports_List().map(
+              reportLine => { if (reportLine.report.post.id === postID) {
+                reportLine.report.post.state = PostState.HIDDEN.toString();
+              }return reportLine;}
+              
+            );
+            this.reports_List.set(updatedReports);
       },
       error: (err:HttpErrorResponse) => {
         switch (err.status) {

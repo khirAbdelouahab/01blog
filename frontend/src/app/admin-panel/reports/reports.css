@@ -135,7 +135,11 @@ td {
     background-color: #ffebee;
     color: #c62828;
 }
-
+.active {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  border-left-color: #667eea;
+}
 .status-report {
     background-color: #fff3e0;
     color: #e48508;

@@ -172,6 +172,10 @@ public class PostService {
         if (post != null) {
             post.setState(newState);
             this.postRepository.save(post);
+            System.out.println("==================");
+            System.out.println("==================");
+
+            System.out.println("post updated : " + post.getState());
         }
     }
 

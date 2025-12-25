@@ -65,7 +65,7 @@ public class Post {
         this.title = title;
         this.content = content;
         this.category = category;
-        this.state = PostState.NEW;
+        this.state = PostState.VISIBLE;
     }
 
     // Getters and Setters
