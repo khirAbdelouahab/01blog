@@ -34,8 +34,8 @@
                         <button class="dropdown-item" >See More</button>
                         <button class="dropdown-item" (click)="onViewPost(report.report.post.id)">View Post</button>
                         <button class="dropdown-item ban" (click)="banUser(report.report.post.author)">Ban User</button>
-                        <button [class]="report.report.post.state==postState.HIDDEN.toString()? 'dropdown-item unban':'dropdown-item ban'" (click)="updatePostState(report.report.post.id)">
-                            {{ report.report.post.state==postState.HIDDEN.toString()? 'active Post':'Hide Post'}}</button>
+                        <button [class]="report.report.post.state=='HIDDEN'? 'dropdown-item unban':'dropdown-item ban'" (click)="updatePostState(report.report.post.id)">
+                            {{ report.report.post.state=='HIDDEN'? 'active Post':'Hide Post'}}</button>
                         <button class="dropdown-item remove" (click)="onDeletePost(report.report.post.id)">Delete
                             Post</button>
                     </div>
