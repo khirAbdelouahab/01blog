@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PostDataResponse } from '../post/post-service';
 import { ReportData } from '../post/report-dialog/report-dialog';
-import { ReportDataRequest } from '../post/report-dialog/report-dialog.service';
+import { ReportDataRequest, ReportUserData } from '../post/report-dialog/report-dialog.service';
 
 
 export interface UserProfileDataResponse {
@@ -71,6 +71,18 @@ export class ProfileService {
     };
     return this.http.post<any>(`${this.apiUrl}/profile/report`, reportData , options);
   }
+
+
+  getAllUsersReported(token: string):  Observable<ReportUserData[]>{
+    const options = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    };
+    return this.http.get<ReportUserData[]>(`${this.apiUrl}/profile/reports/find/all`, options);
+  }
+  
   follow(token: string, username: string): Observable<any> {
 
     const options = {

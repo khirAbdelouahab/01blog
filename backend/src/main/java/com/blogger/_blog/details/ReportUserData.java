@@ -1,24 +1,19 @@
-
 package com.blogger._blog.details;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import com.blogger._blog.enums.ReportReason;
-import com.blogger._blog.model.PostReport;
-
+import com.blogger._blog.model.UserReport;
 public class ReportUserData {
     private Long id;
     private String content;
-    private PostDataResponse post;
+    private UserDataResponse reportedUser;
     private UserDataResponse author;
     private Date created_at;
     private ReportReason reason;
-
+    
     public ReportUserData() {
     }
-
     public ReportUserData(UserDataResponse author, Date created_at,
             ReportReason reason) {
         this.author = author;
@@ -42,12 +37,12 @@ public class ReportUserData {
         this.content = content;
     }
 
-    public PostDataResponse getPost() {
-        return this.post;
+    public UserDataResponse getReportedUser() {
+        return this.reportedUser;
     }
 
-    public void setPost(PostDataResponse post) {
-        this.post = post;
+    public void setReportedUser(UserDataResponse reportedUser) {
+        this.reportedUser = reportedUser;
     }
 
     public UserDataResponse getAuthor() {
@@ -74,20 +69,20 @@ public class ReportUserData {
         this.reason = reason;
     }
 
-    public static List<ReportPostData> convert(List<PostReport> reports) {
-        List<ReportPostData> result = new ArrayList<>();
+    public static List<ReportUserData> convert(List<UserReport> reports) {
+        List<ReportUserData> result = new ArrayList<>();
         for (int i = 0; i < reports.size(); i++) {
-            ReportPostData rePostData = ReportPostData.convert(reports.get(i));
+            ReportUserData rePostData = ReportUserData.convert(reports.get(i));
             result.add(rePostData);
         }
         return result;
     }
 
-    public static ReportPostData convert(PostReport report) {
-        ReportPostData data = new ReportPostData();
+    public static ReportUserData convert(UserReport report) {
+        ReportUserData data = new ReportUserData();
         data.setId(report.getId());
         data.setAuthor(UserDataResponse.convert(report.getAuthor()));
-        data.setPost(PostDataResponse.convert(report.getPost()));
+        data.setReportedUser(UserDataResponse.convert(report.getReportedUser()));
         data.setReason(report.getReason());
         data.setCreated_at(report.getCreated_at());
         data.setContent(report.getContent());

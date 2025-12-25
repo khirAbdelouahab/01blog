@@ -25,9 +25,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.blogger._blog.details.PostDataResponse;
 import com.blogger._blog.details.ProfileFollowStats;
 import com.blogger._blog.details.ReportDataRequest;
+import com.blogger._blog.details.ReportPostData;
+import com.blogger._blog.details.ReportUserData;
 import com.blogger._blog.details.Response;
 import com.blogger._blog.details.UserDataResponse;
 import com.blogger._blog.details.UserProfileDataResponse;
+import com.blogger._blog.enums.UserRole;
 import com.blogger._blog.model.Post;
 import com.blogger._blog.model.User;
 import com.blogger._blog.service.FollowingService;
@@ -196,6 +199,10 @@ public class ProfileController {
         if (reportedUser.getUsername().equals(user.getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't report yourself"));
         }
+
+        if (reportedUser.getRole().equals(UserRole.admin)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't report Admin"));
+        }
         try {
             this.reportPostService.create(reportedUser, user, reportData.getReason(),
                     reportData.getContent());
@@ -207,4 +214,9 @@ public class ProfileController {
         }
     }
 
+    @GetMapping("/reports/find/all")
+    public ResponseEntity<List<ReportUserData>> getAllReports() {
+        List<ReportUserData> reportsData = this.reportPostService.getReportsDataForUsers();
+        return ResponseEntity.ok().body(reportsData);
+    }
 }

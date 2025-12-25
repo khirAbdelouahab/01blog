@@ -125,8 +125,21 @@ export class ReportsComponent implements OnInit {
       next: (res) => {
         console.log('res: ', res);
       },
-      error: (err) => {
-        console.error('error: ', err);
+      error: (err: HttpErrorResponse) => {
+        switch (err.status) {
+          case 403:
+            this.toastService.error(err.error.message)
+            break;
+        
+          default:
+            if (err.error.message) {
+              this.toastService.error(err.error.message);
+            } else {
+              this.toastService.error("something happen wrong");
+
+            }
+            break;
+        }
       }
     })
   }
@@ -138,10 +151,25 @@ export class ReportsComponent implements OnInit {
     }
     this.adminService.updatePostState(token, postID, PostState.HIDDEN).subscribe({
       next: (updatedPost: PostDataResponse) => {
-        alert(`post ${updatedPost.title} is HIDDEN NOW`);
+        this.toastService.error(`post ${updatedPost.title} is HIDDEN NOW`);
       },
-      error: (err) => {
-        console.error('error: ', err);
+      error: (err:HttpErrorResponse) => {
+        switch (err.status) {
+          case 403:
+            if (err.error?.message) {
+              this.toastService.error(err.error.message);
+            } else {
+              this.toastService.error("you can't do this operation");
+            }
+            break;
+          default:
+            if (err.error.message) {
+              this.toastService.error(err.error.message);
+            } else {
+              this.toastService.error("something happen wrong");
+            }
+            break;
+        }
       }
     });
   }

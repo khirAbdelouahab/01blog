@@ -123,7 +123,7 @@ export class PostComponent {
             this.toastService.error(err.error.message);
             break;
           case 403:
-            this.toastService.error("403");
+            this.toastService.error(err.error.message);
             break;
           default:
             break;

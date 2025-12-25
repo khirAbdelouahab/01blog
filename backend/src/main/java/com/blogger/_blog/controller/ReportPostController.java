@@ -3,6 +3,7 @@ package com.blogger._blog.controller;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.blogger._blog.details.ReportDataRequest;
 import com.blogger._blog.details.ReportPostData;
 import com.blogger._blog.details.Response;
+import com.blogger._blog.enums.UserRole;
 import com.blogger._blog.model.Post;
 import com.blogger._blog.model.User;
 import com.blogger._blog.service.PostService;
@@ -53,6 +55,13 @@ public class ReportPostController {
         Post post = this.postService.getById(reportData.getReportedId());
         if (post == null || user == null) {
             return ResponseEntity.badRequest().body(null);
+        }
+        if (post.getAuthor().getUsername().equals(authentication.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't report your post"));
+        }
+
+        if (post.getAuthor().getRole().equals(UserRole.admin)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't report admin post"));
         }
         try {
             this.reportPostService.create(post, user, reportData.getReason(),

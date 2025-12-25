@@ -16,6 +16,7 @@ import { authGuard } from './guards/auth-guard';
 import { OtherUsersComponent } from './other-users/other-users';
 import { PostsComponent } from './admin-panel/posts/posts';
 import { UnauthorizedComponent } from './unauthorized/unauthorized';
+import { UserReportsComponent } from './admin-panel/userReports/userreports';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -41,7 +42,8 @@ export const routes: Routes = [
           { path: 'users', component: UsersComponent },
           { path: 'reports', component: ReportsComponent },
           { path: 'posts', component: PostsComponent },
-          { path: 'stats', component: StatsComponent }
+          { path: 'stats', component: StatsComponent },
+          { path: 'userreports' , component:UserReportsComponent}
         ]
       },
     ]

@@ -89,6 +89,9 @@ public class AdminController {
         if (userData == null) {
             return ResponseEntity.badRequest().body(new Response(false, "user not valid"));
         }
+        if (userData.getUsername().equals(authentication.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(false, "you can't ban your self"));
+        }
         // String username = authentication.getName();
         this.adminService.updateUserState(userData.getUsername(), userData.getState());
         return ResponseEntity.ok().body(new Response(true, "state updated succesfuly"));
@@ -104,13 +107,14 @@ public class AdminController {
     }
 
     @PostMapping("/post/{id}/update/state") 
-    public ResponseEntity<PostDataResponse> updatePostState(@PathVariable("id") Long id, @RequestBody PostState newState) {
+    public ResponseEntity<PostDataResponse> updatePostState(@PathVariable("id") Long id, @RequestBody PostState newState, Authentication authentication) {
         Post post = this.postService.getById(id);
         if (post == null) {
             return ResponseEntity.notFound().build();
         }
-        System.out.println("post id : " + id);
-        System.out.println("post state is : " + newState.toString());
+        if (post.getAuthor().getUsername().equals(authentication.getName())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         this.postService.updatePostState(post, newState);
         return ResponseEntity.ok().body(PostDataResponse.convert(post));
     }

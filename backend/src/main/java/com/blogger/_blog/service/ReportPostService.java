@@ -10,6 +10,7 @@ import com.blogger._blog.Repository.ReportPostRepository;
 import com.blogger._blog.Repository.ReportUserRepository;
 
 import com.blogger._blog.details.ReportPostData;
+import com.blogger._blog.details.ReportUserData;
 import com.blogger._blog.enums.ReportReason;
 import com.blogger._blog.model.Post;
 import com.blogger._blog.model.PostReport;
@@ -83,6 +84,11 @@ public class ReportPostService {
     public List<ReportPostData> getReportsData() {
        List<PostReport> arrayReports = this.reportPostRepository.findAll();
         return ReportPostData.convert(arrayReports);
+    }
+
+    public List<ReportUserData> getReportsDataForUsers() {
+       List<UserReport> arrayReports = this.reportUserRepository.findAll();
+        return ReportUserData.convert(arrayReports);
     }
 
 

@@ -178,7 +178,7 @@ export class ProfileComponent implements OnInit {
             this.toastService.error(err.error.message);
             break;
           case 403:
-            this.toastService.error("forbidden");
+            this.toastService.error(err.error.message);
             break;
           default:
             break;

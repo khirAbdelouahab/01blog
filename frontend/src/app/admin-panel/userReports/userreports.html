@@ -1,0 +1,62 @@
+<div class="container">
+    <div class="header">
+        <h1>All Reported Users ({{ usersList().length }})</h1>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Author Name</th>
+                <th>Reported Name</th>
+                <th>Status</th>
+                <th>Content</th>
+                <th>Reason</th>
+                <th>Join Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (user of usersList(); track user.report.id) {
+            <tr>
+                <td data-label="Name">{{ user.report.author.fullname }}</td>
+                <td data-label="Email">{{ user.report.reportedUser.username }}</td>
+                <td data-label="Status">
+                    <span
+                        [class]="user.report.reportedUser.state=='active'? 'status-badge status-active':'status-badge status-banned'">
+                        {{ user.report.reportedUser.state }}
+                    </span>
+                </td>
+                <td data-label="Content">
+                    <span class="content-text">{{ user.report.content }}</span>
+                </td>
+                <td data-label="Reason">
+                    <span class="status-badge status-report">{{ user.report.reason }}</span>
+                </td>
+                <td data-label="Join Date">{{ formatDate(user.report.created_at.toString()) }}</td>
+                <td class="actions-cell">
+                    <button class="menu-btn" (click)="toggleDropdown(user.report.id)">⋮</button>
+                    
+                    <div [class]="!user.showMenu? 'dropdown-menu':'dropdown-menu show'">
+                        <button class="dropdown-item" type="button" (click)="viewProfile(user.report.reportedUser.username)">
+                            view Profile
+                        </button>
+                        <button
+                            [class]="(user.report.reportedUser.state=='active')? 'dropdown-item ban':'dropdown-item unban'"
+                            (click)="banUser(user.report.reportedUser)">
+                            @if(user.report.reportedUser.state == "active") {
+                            Ban User
+                            } @else if(user.report.reportedUser.state == "banned") {
+                            Active User
+                            }
+                        </button>
+                        <button class="dropdown-item remove" type="button" (click)="removeUser(user.report.reportedUser.username)">
+                            Remove User
+                        </button>
+                        
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

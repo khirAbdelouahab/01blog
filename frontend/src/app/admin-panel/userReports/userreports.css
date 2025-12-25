@@ -1,0 +1,339 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.search-box {
+    padding: 10px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    width: 250px;
+    max-width: 100%;
+    font-size: 14px;
+}
+
+.search-box:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    border-bottom: 2px solid #e5e5e5;
+}
+
+th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+tbody tr:hover {
+    background-color: #fafafa;
+}
+
+td {
+    padding: 16px;
+    font-size: 14px;
+    color: #333;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-banned {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.actions-cell {
+    position: relative;
+}
+
+.menu-btn {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.2s;
+}
+
+.menu-btn:hover {
+    background-color: #e8e8e8;
+    border-color: #ccc;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 150px;
+    display: none;
+    z-index: 1000;
+    margin-top: 4px;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-item:first-child {
+    border-radius: 6px 6px 0 0;
+}
+
+.dropdown-item:last-child {
+    border-radius: 0 0 6px 6px;
+}
+
+.dropdown-item.ban {
+    color: #d32f2f;
+}
+
+.dropdown-item.unban {
+    color: #2e7d32;
+}
+
+.dropdown-item.remove {
+    color: #f57c00;
+}
+
+.content-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.status-report {
+    background-color: #fff3e0;
+    color: #e48508;
+}
+/* ========================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ======================================== */
+
+/* Tablets and below (768px) */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+        margin-top: 10px;
+    }
+td:hover .content-text {
+        white-space: normal;
+        overflow: visible;
+    }
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    h1 {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    /* Hide table headers on mobile */
+    thead {
+        display: none;
+    }
+
+    /* Make table body display as cards */
+    tbody,
+    tr,
+    td {
+        display: block;
+    }
+
+    tbody tr {
+        margin-bottom: 20px;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 15px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    tbody tr:hover {
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    td {
+        padding: 8px 0;
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Add labels before each cell */
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 10px;
+        flex-shrink: 0;
+    }
+
+    /* Actions cell special styling */
+    .actions-cell {
+        justify-content: center;
+        padding-top: 15px;
+        border-top: 1px solid #f0f0f0;
+        margin-top: 10px;
+    }
+
+    .actions-cell::before {
+        display: none;
+    }
+
+    .menu-btn {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .dropdown-menu {
+        right: auto;
+        left: 0;
+        width: 100%;
+    }
+}
+
+/* Small phones (480px and below) */
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 18px;
+    }
+
+    td {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    td::before {
+        margin-bottom: 5px;
+    }
+
+    .status-badge {
+        align-self: flex-start;
+    }
+}
+
+/* Large screens optimization */
+@media screen and (min-width: 1400px) {
+    .container {
+        padding: 40px;
+        margin-top: 50px;
+    }
+
+    body {
+        padding: 40px 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .search-box {
+        width: 300px;
+    }
+}

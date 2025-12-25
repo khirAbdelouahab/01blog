@@ -39,7 +39,7 @@ export interface ReportDataRequest {
 export interface ReportUserData {
   id: number;
   content: string;
-  userReported: UserDataResponse;
+  reportedUser: UserDataResponse;
   author: UserDataResponse;
   created_at: Date;
   reason: ReportReason;
