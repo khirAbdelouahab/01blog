@@ -9,6 +9,7 @@
             <tr>
                 <th>Name</th>
                 <th>Content</th>
+                <th>Post Title</th>
                 <th>Reason</th>
                 <th>Date</th>
                 <th>Actions</th>
@@ -20,6 +21,9 @@
                 <td data-label="Name">{{ report.report.author.fullname }}</td>
                 <td data-label="Content">
                     <span class="content-text">{{ report.report.content }}</span>
+                </td>
+                <td data-label="Title">
+                    <span class="content-text">{{ report.report.post.title }}</span>
                 </td>
                 <td data-label="Reason">
                     <span class="status-badge status-report">{{ report.report.reason }}</span>
@@ -33,7 +37,9 @@
                     <div [class]="report.showMenu ? 'dropdown-menu show' : 'dropdown-menu'">
                         <button class="dropdown-item" >See More</button>
                         <button class="dropdown-item" (click)="onViewPost(report.report.post.id)">View Post</button>
-                        <button class="dropdown-item ban" (click)="banUser(report.report.post.author)">Ban User</button>
+                        <button [class]="report.report.post.author.state=='banned'? 'dropdown-item unban':'dropdown-item ban'" (click)="banUser(report.report.post.author)">
+                           {{ report.report.post.author.state=='banned'? 'Unban User':'Ban User'}}
+                        </button>
                         <button [class]="report.report.post.state=='HIDDEN'? 'dropdown-item unban':'dropdown-item ban'" (click)="updatePostState(report.report.post.id)">
                             {{ (report.report.post.state=='HIDDEN')? 'active Post':'Hide Post'}}</button>
                         <button class="dropdown-item remove" (click)="onDeletePost(report.report.post.id)">Delete

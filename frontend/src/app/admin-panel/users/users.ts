@@ -89,11 +89,11 @@ export class UsersComponent implements OnInit {
         this.adminService.deleteUser(token, username).subscribe({
           next: (response: Response) => {
             if (response.success) {
-              this.toast.success("user deleted succesfuly");
               const arrayOfUsers: UserLineData[] = this.users_array().filter(user => {
                 return user.userDataResponse.username != username;
               })
               this.users_array.set(arrayOfUsers);
+              this.toast.success("user deleted succesfuly");
             }
 
           },
