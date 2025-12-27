@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -46,19 +47,39 @@ public class JwtFilter extends OncePerRequestFilter {
                 username = jwtService.extractUsername(token);
             }
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                
-                if (jwtService.isTokenExpired(token)) {
+                UserDetails userDetails;
+                try {
+                    userDetails = userDetailsService.loadUserByUsername(username);
+                    User u = this.uService.findByUsername(userDetails.getUsername());
+                    if (u == null) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"this account is deleted by admin\"}");
+                        return;
+                    }
+
+                    if (u.getState().equals(UserState.banned)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("{\"error\": \"Token expired\"}");
-                    return;
-                }
-                User u = this.uService.findByUsername(userDetails.getUsername());
-                if (u.getState().equals(UserState.banned)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
                     response.getWriter().write("{\"error\": \"you are banned\"}");
                     return;
                 }
+                } catch (UsernameNotFoundException e) {
+                    // User was deleted by admin
+                    System.out.println("User not found (deleted by admin): " + username);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"this account is deleted by admin\"}");
+                    return;
+                }
+                if (jwtService.isTokenExpired(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"Token expired\"}");
+                    return;
+                }
+
+                
                 if (jwtService.validateTokenByUsername(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                             null, userDetails.getAuthorities());
@@ -69,16 +90,20 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             System.out.println("expired token : " + token);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Token expired\"}");
             return; // Don't continue filter chain
         } catch (MalformedJwtException e) {
             System.out.println("Malformed token : " + token);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Malformed token\"}");
             return;
         } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("{\"error\": \"Internal Server\"}");
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Internal Server hhhhhh\"}");
             return;
         }
         filterChain.doFilter(request, response);
