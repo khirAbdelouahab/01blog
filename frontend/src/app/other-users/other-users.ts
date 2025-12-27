@@ -3,6 +3,9 @@ import { OtherUserData, ProfileService } from '../profile/profile.service';
 import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../toast-component/toast.service';
+import { AuthService } from '../auth';
 
 @Component({
   selector: 'app-other-users',
@@ -14,7 +17,7 @@ import { Router } from '@angular/router';
 export class OtherUsersComponent implements OnInit{
   
   otherUsers$ = new BehaviorSubject<OtherUserData[] | []>([]);
-  constructor(private profileService: ProfileService, private router: Router){}
+  constructor(private toastService:ToastService, private authService: AuthService, private profileService: ProfileService, private router: Router){}
   ngOnInit(): void {
     this.getOtherUsers();
   }
@@ -28,9 +31,25 @@ export class OtherUsersComponent implements OnInit{
       next: (res:OtherUserData[]) => {
           this.otherUsers$.next(res);
       },
-      error: (err) => {
-        console.error('error: ', err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     })
   }
 
@@ -41,7 +60,6 @@ export class OtherUsersComponent implements OnInit{
     }
     this.profileService.follow(token,username).subscribe({
       next: (subscribe) => {
-        console.log('subscribe: ', subscribe);
         const newOtherUsers = this.otherUsers$.value.map((user) => {
           if (user.username == username) {
             user.isFollowedByMe = subscribe.isFollower;
@@ -51,9 +69,25 @@ export class OtherUsersComponent implements OnInit{
         })
         this.otherUsers$.next(newOtherUsers);
       },
-      error: (err) => {
-        console.error('error: ',err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
 

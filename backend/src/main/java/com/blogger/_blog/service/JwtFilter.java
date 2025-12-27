@@ -54,14 +54,14 @@ public class JwtFilter extends OncePerRequestFilter {
                     if (u == null) {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.setContentType("application/json");
-                        response.getWriter().write("{\"error\": \"this account is deleted by admin\"}");
+                        response.getWriter().write("{\"message\": \"this account is deleted by admin\"}");
                         return;
                     }
 
                     if (u.getState().equals(UserState.banned)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
-                    response.getWriter().write("{\"error\": \"you are banned\"}");
+                    response.getWriter().write("{\"message\": \"you are banned\"}");
                     return;
                 }
                 } catch (UsernameNotFoundException e) {
@@ -69,13 +69,13 @@ public class JwtFilter extends OncePerRequestFilter {
                     System.out.println("User not found (deleted by admin): " + username);
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
-                    response.getWriter().write("{\"error\": \"this account is deleted by admin\"}");
+                    response.getWriter().write("{\"message\": \"this account is deleted by admin\"}");
                     return;
                 }
                 if (jwtService.isTokenExpired(token)) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
-                    response.getWriter().write("{\"error\": \"Token expired\"}");
+                    response.getWriter().write("{\"message\": \"Token expired\"}");
                     return;
                 }
 
@@ -91,19 +91,19 @@ public class JwtFilter extends OncePerRequestFilter {
             System.out.println("expired token : " + token);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Token expired\"}");
+            response.getWriter().write("{\"message\": \"Token expired\"}");
             return; // Don't continue filter chain
         } catch (MalformedJwtException e) {
             System.out.println("Malformed token : " + token);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Malformed token\"}");
+            response.getWriter().write("{\"message\": \"Malformed token\"}");
             return;
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Internal Server hhhhhh\"}");
+            response.getWriter().write("{\"message\": \"Internal Server hhhhhh\"}");
             return;
         }
         filterChain.doFilter(request, response);

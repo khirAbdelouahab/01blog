@@ -111,6 +111,10 @@ export class ProfileComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         switch (err.status) {
+          case 401:
+            this.toastService.error(err.error.message);
+            this.authService.logout();
+            break;
           case 404:
             this.toastService.error("this user not found");
             this.router.navigate(['/home/feeds']);
@@ -172,18 +176,25 @@ export class ProfileComponent implements OnInit {
             this.toastService.success("report submitted succesfuly");
         }
       },
-     error: (err:HttpErrorResponse) => {
-        switch (err.status) {
-          case 400:
-            this.toastService.error(err.error.message);
-            break;
-          case 403:
-            this.toastService.error(err.error.message);
-            break;
-          default:
-            break;
+    error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
         }
-      }
     });
   }
 
@@ -219,13 +230,28 @@ export class ProfileComponent implements OnInit {
         const s = this.convertDataToState(response.userDataResponse.about || '');
         this.changeAboutState(s);
       },
-      error: (err) => {
-        
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     })
   }
   goToPostView(postId: number) {
-    console.log('postID: ', postId);
     this.router.navigate(['post/view', postId]);
   }
   saveAbout(username: any) {
@@ -241,15 +267,29 @@ export class ProfileComponent implements OnInit {
     this.profileService.saveUserAboutToDataBase(token, this.userDataResponse).subscribe({
       next: (response: UserDataResponse) => {
         this.userDataResponse = response;
-        console.log('response: ', response);
       },
-      error: (err) => {
-        console.error('error: ', err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
   cancelEdit() {
-    console.log('edit');
   }
   showEditForm() {
     this.aboutState$.next(AboutState.update);
@@ -276,9 +316,25 @@ export class ProfileComponent implements OnInit {
         }
 
       },
-      error: (err) => {
-        console.error('error: ', err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
 
@@ -294,9 +350,25 @@ export class ProfileComponent implements OnInit {
       next: (response) => {
         console.log('response: ', response);
       },
-      error: (err) => {
-        console.error('error: ', err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
 
@@ -310,9 +382,25 @@ export class ProfileComponent implements OnInit {
       next: (response) => {
         console.log('response : ', response);
       },
-      error: (err) => {
-        console.error('error : ', err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
 
@@ -334,9 +422,25 @@ export class ProfileComponent implements OnInit {
       next: (res) => {
         console.log('res: ', res);
       },
-      error: (err) => {
-        console.error('error: ', err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     })
   }
 }

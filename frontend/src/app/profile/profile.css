@@ -270,6 +270,7 @@ video.article-image {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0; /* Important for flex items to allow shrinking */
 }
 
 .article-title {
@@ -278,6 +279,11 @@ video.article-image {
   color: #1f2937;
   margin-bottom: 12px;
   line-height: 1.4;
+  /* Text overflow handling */
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .article-description {
@@ -285,22 +291,29 @@ video.article-image {
   color: #6b7280;
   line-height: 1.6;
   margin-bottom: 15px;
+  /* Text overflow handling */
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .article-meta {
   display: flex;
-  align-items: center;
-  gap: 15px;
-  font-size: 13px;
-  color: #9ca3af;
-  margin-top: auto;
+  gap: 16px;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .meta-item {
   display: flex;
   align-items: center;
   gap: 6px;
+  cursor: pointer;
+  /* Prevent meta items from growing */
+  flex-shrink: 0;
 }
+
+
 
 .meta-icon {
   width: 14px;

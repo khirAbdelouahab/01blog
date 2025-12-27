@@ -5,6 +5,8 @@ import { NotificationData, NotificationService } from '../notification/notificat
 import { AuthService, Response } from '../auth';
 import { CommonModule } from '@angular/common';
 import { NotificationComponent } from '../notification/notification';
+import { ToastService } from '../toast-component/toast.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +25,7 @@ export class HeaderComponent implements OnInit {
   onToggleMenuEventHandler = output<boolean>();
 
 
-  constructor(private router: Router, private authService: AuthService, private notificationService: NotificationService, private cdr: ChangeDetectorRef) { }
+  constructor(private toastService: ToastService, private router: Router, private authService: AuthService, private notificationService: NotificationService, private cdr: ChangeDetectorRef) { }
   ngOnInit(): void {
     const User = this.authService.getConnectedUser();
 
@@ -82,8 +84,25 @@ export class HeaderComponent implements OnInit {
       next: (res: NotificationData[]) => {
         this.notifications$.next(res);
       },
-      error: (err: any) => {
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
 
@@ -98,8 +117,25 @@ export class HeaderComponent implements OnInit {
           this.authService.updateConnectedUser(0);
         }
       },
-      error: (err: any) => {
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     })
   }
 }

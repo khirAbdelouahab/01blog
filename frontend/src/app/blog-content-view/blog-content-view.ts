@@ -232,15 +232,15 @@ export class BlogContentView implements OnInit {
         error: (err: HttpErrorResponse) => {
           switch (err.status) {
             case 403:
-              alert('post is forbidden');
+              this.toastService.error('post is forbidden');
               this.goToHome();
               break;
             case 404:
-              alert('post not found');
+              this.toastService.error('post not found');
               this.goToHome();
               break;
             default:
-              alert('Internal server');
+              this.toastService.error('Something happen wrong');
               break;
           }
           console.error('error: ', err);
@@ -305,18 +305,20 @@ export class BlogContentView implements OnInit {
           switch (err.status) {
             case 404:
               this.toastService.error("post not found"); 
+              this.router.navigate(['/home/feeds']); 
               break;
             case 400:
-              this.toastService.error("bad request"); 
+              this.toastService.error("bad request");
+              this.router.navigate(['/home/feeds']);
               break;
             case 401:
-              this.toastService.error("UnAuthorized"); 
+              this.toastService.error(err.error.message);
+              this.authService.logout(); 
               break;
             default:
               this.toastService.error("Internal Server"); 
               break;
           }
-          this.router.navigate(['/home/feeds']); 
         }
       });
     }
@@ -330,8 +332,25 @@ export class BlogContentView implements OnInit {
       next: (res) => {
         this.router.navigate(['/home/feeds']); 
       },
-      error: (err) => {
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
 
@@ -345,8 +364,25 @@ export class BlogContentView implements OnInit {
         this.toastService.success(`post ${updatedPost.title} is ${updatedPost.state} NOW`);
         this.getPostById();
       },
-      error: (err) => {
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     });
   }
 
@@ -369,9 +405,25 @@ export class BlogContentView implements OnInit {
       next: (res) => {
         console.log('res: ', res);
       },
-      error: (err) => {
-        console.error('error: ', err);
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     })
   }
 

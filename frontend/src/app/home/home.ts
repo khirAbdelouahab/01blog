@@ -31,22 +31,6 @@ export class HomeComponent {
     return this.authService.hasRole('admin');
   }
 
-  onFollowing() {
-    console.log('onFollowing');
-  }
-  onMyPosts() {
-    console.log('onMyPosts');
-  }
-  onLikedPosts() {
-    console.log('onLikedPosts');
-  }
-  onAnalytics() {
-    console.log('onAnalytics');
-  }
-  onSetting() {
-    console.log('onSetting');
-  }
-
   logout() {
     console.log('logout');
     this.authService.logout();

@@ -2,6 +2,9 @@ import { Component, Inject, Input, output, PLATFORM_ID } from '@angular/core';
 import { NotificationData, NotificationService } from './notification.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../toast-component/toast.service';
+import { AuthService } from '../auth';
 
 @Component({
   selector: 'app-notification',
@@ -16,7 +19,7 @@ export class NotificationComponent {
     this._notificationInfo = value;
   }
   onClickEventHandler = output<void>();
-  constructor(private router: Router, private notificationService: NotificationService, @Inject(PLATFORM_ID) private platformId: Object) { }
+  constructor(private authService: AuthService, private toastService: ToastService, private router: Router, private notificationService: NotificationService, @Inject(PLATFORM_ID) private platformId: Object) { }
   get notificationInfo() { return this._notificationInfo; }
   private _notificationInfo: NotificationData | undefined;
   markAsRead(id: any) {
@@ -25,7 +28,27 @@ export class NotificationComponent {
       if (!token) {
         return;
       }
-      this.notificationService.markNotificationAsRead(token, id)
+      this.notificationService.markNotificationAsRead(token, id).subscribe({
+        error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
+      })
     }
   }
 

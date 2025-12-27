@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ReportData, ReportDialogComponent } from './report-dialog/report-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDataRequest, ReportDialogService, ReportPostData, ReportReason } from './report-dialog/report-dialog.service';
-import { Response } from '../auth';
+import { AuthService, Response } from '../auth';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from '../toast-component/toast.service';
 
@@ -28,7 +28,7 @@ export class PostComponent {
   private _postInfo: PostDataResponse | undefined;
   isLiked: boolean = false;
   likes$ = new BehaviorSubject<number>(0);
-  constructor(private toastService:ToastService , private postService: PostService, private router: Router, private dialog: MatDialog, private reportService: ReportDialogService) {
+  constructor(private authService: AuthService, private toastService:ToastService , private postService: PostService, private router: Router, private dialog: MatDialog, private reportService: ReportDialogService) {
   }
   goToPostView(id: number) {
     this.router.navigate(['post/view', id]);
@@ -46,8 +46,24 @@ export class PostComponent {
             this.likes$.next(response?.likes);
           }
         },
-        error: (err) => {
-          console.error('error : ', err);
+        error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
         }
       });
     }
@@ -59,9 +75,25 @@ export class PostComponent {
       return;
     }
     this.postService.getTest(token).subscribe({
-      error: err => {
-        console.error('error: ',err);   
-      }
+      error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
+        }
     })
   }
 
@@ -117,18 +149,25 @@ export class PostComponent {
             this.toastService.success("report submitted succesfuly");
         }
       },
-     error: (err:HttpErrorResponse) => {
-        switch (err.status) {
-          case 400:
-            this.toastService.error(err.error.message);
-            break;
-          case 403:
-            this.toastService.error(err.error.message);
-            break;
-          default:
-            break;
+     error: (err: HttpErrorResponse) => {
+            switch (err.status) {
+              case 401:
+                this.toastService.error(err.error.message);
+                this.authService.logout();
+                break;
+              case 400:
+                this.toastService.error(err.error.message);
+                break;
+              case 403:
+                this.toastService.error(err.error.message);
+                break;
+              case 404:
+                this.toastService.error(err.error.message);
+                break; 
+              default:
+                break;
+            }  
         }
-      }
     });
   }
 
