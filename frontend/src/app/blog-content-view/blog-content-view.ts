@@ -287,7 +287,6 @@ export class BlogContentView implements OnInit {
   }
 
   deletePost(postID: any) {
-    console.log('deletePost triggered: ', postID);
     const token = sessionStorage.getItem('authToken');
     if (!token) {
       return;
@@ -299,9 +298,25 @@ export class BlogContentView implements OnInit {
     } else {
       this.postService.deletePost(postID, token).subscribe({
         next: (res) => {
+          this.toastService.success("post deleted succesfuly");
           this.router.navigate(['/home/feeds']); 
         },
-        error: (err) => {
+        error: (err:HttpErrorResponse) => {
+          switch (err.status) {
+            case 404:
+              this.toastService.error("post not found"); 
+              break;
+            case 400:
+              this.toastService.error("bad request"); 
+              break;
+            case 401:
+              this.toastService.error("UnAuthorized"); 
+              break;
+            default:
+              this.toastService.error("Internal Server"); 
+              break;
+          }
+          this.router.navigate(['/home/feeds']); 
         }
       });
     }
@@ -327,7 +342,8 @@ export class BlogContentView implements OnInit {
     }
     this.adminService.updatePostState(token, postID).subscribe({
       next: (updatedPost: PostDataResponse) => {
-        alert(`post ${updatedPost.title} is HIDDEN NOW`);
+        this.toastService.success(`post ${updatedPost.title} is ${updatedPost.state} NOW`);
+        this.getPostById();
       },
       error: (err) => {
       }

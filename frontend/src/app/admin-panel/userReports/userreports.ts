@@ -99,7 +99,7 @@ export class UserReportsComponent implements OnInit {
         next: (response: Response) => {
       
         const arrayOfUsers: UserReportLineData[] = this.users_array().filter(report => {
-          return report.report.reportedUser.username != username;
+          return report.report.reportedUser.username != username && report.report.author.username != username ;
         })
         this.users_array.set(arrayOfUsers);
       },

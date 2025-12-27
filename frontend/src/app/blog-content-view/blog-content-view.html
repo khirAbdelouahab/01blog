@@ -29,7 +29,7 @@
                     <span class="separator" (click)="toggleMenu()">⋮</span>
                     <div [class]="isMenuOpened? 'dropdown-menu show':'dropdown-menu'">
                         @if (isAdmin || postData.createdByMe) {
-                        <button class="dropdown-item" (click)="deletePost(postData.id)">delete post</button>
+                        <button class="dropdown-item remove" (click)="deletePost(postData.id)">delete post</button>
                         }
 
                         @if (postData.createdByMe) {
@@ -37,9 +37,11 @@
                         }
 
                         @if (isAdmin && !postData.createdByMe) {
-                        <button class="dropdown-item" (click)="banUser(postData.author)">{{
-                            postData.author.state=='banned'? 'Unban':'ban'}} User</button>
-                        <button class="dropdown-item" (click)="hidePost(postData.id)">hide post</button>
+                        <button [class]="postData.author.state=='banned'? 'dropdown-item unban':'dropdown-item ban'" (click)="banUser(postData.author)">
+                            {{ postData.author.state=='banned'? 'Unban User':'ban User'}} </button>
+                        <button [class]="postData.state=='HIDDEN'? 'dropdown-item unban':'dropdown-item ban'" (click)="hidePost(postData.id)">
+                            {{postData.state=='HIDDEN'? 'active post':'hide post'}}
+                        </button>
                         }
                     </div>
                 </div>

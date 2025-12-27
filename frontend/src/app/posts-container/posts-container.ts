@@ -3,6 +3,7 @@ import { PostDataResponse, PostService } from '../post/post-service';
 import { PostComponent } from '../post/post';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-posts-container',
@@ -13,7 +14,9 @@ import { BehaviorSubject } from 'rxjs';
 
 export class PostsContainerComponent implements OnInit {
   posts$ = new BehaviorSubject<PostDataResponse[]>([]);
-  constructor(private postService: PostService){}
+  constructor(private postService: PostService, private router:Router){
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
   ngOnInit(): void {
     this.getConnectedUserPosts();
   }

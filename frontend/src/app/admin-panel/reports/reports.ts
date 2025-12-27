@@ -115,11 +115,11 @@ export class ReportsComponent implements OnInit {
       if (result) {
         this.adminService.deletePost(token, postID).subscribe({
           next: (response: Response) => {
-            this.toastService.success("Post Deleted Successfully");
             const updatedReports = this.reports_List().filter(
               reportLine => reportLine.report.post.id !== postID
             );
             this.reports_List.set(updatedReports);
+            this.toastService.success("Post Deleted Successfully");
              
           },
           error: (err: HttpErrorResponse) => {
@@ -156,8 +156,12 @@ export class ReportsComponent implements OnInit {
       return;
     }
     this.profileService.updateUserState(token, userData).subscribe({
-      next: (res) => {
+      next: (res: Response) => {
+        if (res.success) {
           this.toastService.success("User State updated succesfuly");
+          this.getAllReports();
+        }
+          
       },
       error: (err: HttpErrorResponse) => {
         switch (err.status) {

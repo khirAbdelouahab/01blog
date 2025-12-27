@@ -27,7 +27,7 @@ export const routes: Routes = [
     path: 'home', component: HomeComponent, canActivate: [authGuard],
     children: [
       { path: '', component: PostsContainerComponent },
-      { path: 'feeds', component: PostsContainerComponent },
+      { path: 'feeds', component: PostsContainerComponent, runGuardsAndResolvers: 'always'},
       { path: 'post/create', component: CreatePost },
       { path: 'post/create/:id', component: CreatePost },
       { path: 'notification', component: NotificationComponent },
